@@ -1,0 +1,12 @@
+{
+  "name": "Spring",
+  "params": [
+    {"key": "tone", "name": "Tone", "min": 0, "max": 1, "default": 0.244},
+    {"key": "turns", "name": "Turns", "min": 0, "max": 1, "default": 0.458},
+    {"key": "damp", "name": "Damp", "min": 0, "max": 1, "default": 0.061},
+    {"key": "level", "name": "Level", "min": 0, "max": 1, "default": 0.61}
+  ],
+  "sections": [
+    {"label": "Spring", "keys": ["tone", "turns", "damp", "level"]}
+  ]
+}

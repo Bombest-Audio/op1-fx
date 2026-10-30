@@ -1,0 +1,18 @@
+{
+  "name": "Nitro",
+  "vendor": "bombest",
+  "uid": "BbNt",
+  "version": 1000,
+  "so": "nitro.so",
+  "params": "params.json",
+  "layout": "layout.conf",
+  "art": "html",
+  "effect": true,
+  "targets": ["armv7", "aarch64"],
+  "build": {
+    "root": "..",
+    "sources": ["core/nitro_core.c", "mpc/engine.c"],
+    "cflags": ["-Icore", "-O2"],
+    "libs": ["-lm", "-lpthread"]
+  }
+}

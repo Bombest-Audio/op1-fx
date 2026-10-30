@@ -1,0 +1,18 @@
+{
+  "name": "Spring",
+  "vendor": "bombest",
+  "uid": "BbSp",
+  "version": 1000,
+  "so": "spring.so",
+  "params": "params.json",
+  "layout": "layout.conf",
+  "art": "html",
+  "effect": true,
+  "targets": ["armv7", "aarch64"],
+  "build": {
+    "root": "..",
+    "sources": ["core/spring_core.c", "mpc/engine.c"],
+    "cflags": ["-Icore", "-O2"],
+    "libs": ["-lm", "-lpthread"]
+  }
+}

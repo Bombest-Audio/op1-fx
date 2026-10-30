@@ -1,0 +1,18 @@
+{
+  "name": "Cluster",
+  "vendor": "bombest",
+  "uid": "BbCl",
+  "version": 1000,
+  "so": "cluster.so",
+  "params": "params.json",
+  "layout": "layout.conf",
+  "art": "html",
+  "defines": {"SAMPLE_ACCURATE": 1},
+  "targets": ["armv7", "aarch64"],
+  "build": {
+    "root": "..",
+    "sources": ["core/cluster_core.c", "mpc/engine.c"],
+    "cflags": ["-Icore", "-O2"],
+    "libs": ["-lm", "-lpthread"]
+  }
+}

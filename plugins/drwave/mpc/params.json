@@ -1,0 +1,102 @@
+{
+  "name": "DrWave",
+  "params": [
+    {
+      "key": "wave",
+      "name": "Wave",
+      "min": 0,
+      "max": 1,
+      "default": 0.7324
+    },
+    {
+      "key": "blend",
+      "name": "Blend",
+      "min": 0,
+      "max": 1,
+      "default": 0.4883
+    },
+    {
+      "key": "motion",
+      "name": "Motion",
+      "min": 0,
+      "max": 1,
+      "default": 0.2502
+    },
+    {
+      "key": "fold",
+      "name": "Fold",
+      "min": 0,
+      "max": 1,
+      "default": 0.7324
+    },
+    {
+      "key": "attack",
+      "name": "Attack",
+      "min": 0,
+      "max": 1,
+      "default": 0.1945
+    },
+    {
+      "key": "decay",
+      "name": "Decay",
+      "min": 0,
+      "max": 1,
+      "default": 0.7211
+    },
+    {
+      "key": "sustain",
+      "name": "Sustain",
+      "min": 0,
+      "max": 1,
+      "default": 0.6
+    },
+    {
+      "key": "release",
+      "name": "Release",
+      "min": 0,
+      "max": 1,
+      "default": 0.5147
+    },
+    {
+      "key": "level",
+      "name": "Level",
+      "min": 0,
+      "max": 1,
+      "default": 0.8
+    },
+    {
+      "key": "tone",
+      "name": "Tone",
+      "min": 0,
+      "max": 1,
+      "default": 0.9766
+    }
+  ],
+  "sections": [
+    {
+      "label": "DrWave",
+      "keys": [
+        "wave",
+        "blend",
+        "motion",
+        "fold"
+      ]
+    },
+    {
+      "label": "Envelope",
+      "keys": [
+        "attack",
+        "decay",
+        "sustain",
+        "release",
+        "level"
+      ]
+    },
+    {
+      "label": "Tone",
+      "keys": [
+        "tone"
+      ]
+    }
+  ]
+}

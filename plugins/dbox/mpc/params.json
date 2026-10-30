@@ -1,0 +1,127 @@
+{
+  "name": "DBox",
+  "params": [
+    {
+      "key": "pitch",
+      "name": "Pitch",
+      "min": -1,
+      "max": 1,
+      "default": 0.0
+    },
+    {
+      "key": "wave",
+      "name": "Wave",
+      "min": 0,
+      "max": 1,
+      "default": 0.0
+    },
+    {
+      "key": "decay",
+      "name": "Decay",
+      "min": 0,
+      "max": 1,
+      "default": 0.089
+    },
+    {
+      "key": "mode",
+      "name": "Mode",
+      "min": 0,
+      "max": 7,
+      "default": 0,
+      "display": "int"
+    },
+    {
+      "key": "mix2",
+      "name": "Mix 2",
+      "min": 0,
+      "max": 1,
+      "default": 0.2187
+    },
+    {
+      "key": "wave2",
+      "name": "Wave 2",
+      "min": 0,
+      "max": 1,
+      "default": 0.0
+    },
+    {
+      "key": "decay2",
+      "name": "Decay 2",
+      "min": 0,
+      "max": 1,
+      "default": 0.0791
+    },
+    {
+      "key": "filter",
+      "name": "Filter",
+      "min": 0,
+      "max": 1,
+      "default": 0.1406
+    },
+    {
+      "key": "attack",
+      "name": "Attack",
+      "min": 0,
+      "max": 1,
+      "default": 0.1505
+    },
+    {
+      "key": "env_decay",
+      "name": "Env Decay",
+      "min": 0,
+      "max": 1,
+      "default": 0.5
+    },
+    {
+      "key": "sustain",
+      "name": "Sustain",
+      "min": 0,
+      "max": 1,
+      "default": 1.0
+    },
+    {
+      "key": "release",
+      "name": "Release",
+      "min": 0,
+      "max": 1,
+      "default": 0.7
+    },
+    {
+      "key": "level",
+      "name": "Level",
+      "min": 0,
+      "max": 1,
+      "default": 0.8
+    }
+  ],
+  "sections": [
+    {
+      "label": "Drum",
+      "keys": [
+        "pitch",
+        "wave",
+        "decay",
+        "mode"
+      ]
+    },
+    {
+      "label": "Osc 2",
+      "keys": [
+        "mix2",
+        "wave2",
+        "decay2",
+        "filter"
+      ]
+    },
+    {
+      "label": "Envelope",
+      "keys": [
+        "attack",
+        "env_decay",
+        "sustain",
+        "release",
+        "level"
+      ]
+    }
+  ]
+}

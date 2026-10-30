@@ -1,0 +1,18 @@
+{
+  "name": "DSynth",
+  "vendor": "bombest",
+  "uid": "BbDs",
+  "version": 1000,
+  "so": "dsynth.so",
+  "params": "params.json",
+  "layout": "layout.conf",
+  "art": "html",
+  "targets": ["armv7", "aarch64"],
+  "defines": {"SAMPLE_ACCURATE": 1},
+  "build": {
+    "root": "..",
+    "sources": ["core/dsynth_core.c", "mpc/engine.c"],
+    "cflags": ["-Icore", "-O2"],
+    "libs": ["-lm", "-lpthread"]
+  }
+}

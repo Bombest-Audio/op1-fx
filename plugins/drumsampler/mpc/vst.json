@@ -1,0 +1,18 @@
+{
+  "name": "DrumSampler",
+  "vendor": "bombest",
+  "uid": "BbDm",
+  "version": 1000,
+  "so": "drumsampler.so",
+  "params": "params.json",
+  "layout": "layout.conf",
+  "art": "html",
+  "targets": ["armv7", "aarch64"],
+  "defines": {"SAMPLE_ACCURATE": 1, "MODULE_SUBDIR": "\"samples\""},
+  "build": {
+    "root": "..",
+    "sources": ["core/drumsampler_core.c", "core/drumsampler_kit.c", "mpc/engine.c"],
+    "cflags": ["-Icore", "-O2"],
+    "libs": ["-lm", "-lpthread"]
+  }
+}

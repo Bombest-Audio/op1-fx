@@ -1,0 +1,86 @@
+name: build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  core-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Core DSP tests, every plugin
+        shell: bash
+        run: |
+          for t in plugins/*/core/tests/run.sh; do
+            echo "== $t"
+            (cd "$(dirname "$t")/../.." && CC=gcc core/tests/run.sh)
+          done
+
+  plugins:
+    needs: core-tests
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-14, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+      - name: Build
+        run: cmake --build build --config Release --parallel
+      - name: Collect artifacts
+        shell: bash
+        run: |
+          mkdir -p dist
+          for fmt in VST3 CLAP AU Standalone; do
+            for d in build/plugins/*/*_artefacts; do
+              [ -d "$d/Release/$fmt" ] && mkdir -p "dist/$fmt" && cp -R "$d/Release/$fmt/." "dist/$fmt/"
+              [ -d "$d/$fmt" ] && mkdir -p "dist/$fmt" && cp -R "$d/$fmt/." "dist/$fmt/"
+            done
+          done
+          find dist -maxdepth 2 | head -80
+      - name: Verify macOS deployment target
+        if: runner.os == 'macOS'
+        run: |
+          for b in dist/VST3/*.vst3/Contents/MacOS/* dist/AU/*.component/Contents/MacOS/* dist/CLAP/*.clap/Contents/MacOS/*; do
+            echo "$b"; lipo -info "$b"; vtool -show-build "$b" | grep minos
+          done
+      - name: Upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: op1-fx-${{ runner.os }}
+          path: dist
+
+  mpc:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: sd88me/mpc-vst-plugins
+          # Pinned to a commit so upstream changes cannot alter the build.
+          ref: 81526f870985cce96050ee92b7ed5c7b264ce972
+          path: mpc-vst-plugins
+      - name: Build MPC VST2 (armv7 and aarch64), every plugin
+        shell: bash
+        run: |
+          for v in plugins/*/mpc/vst.json; do
+            echo "== $v"
+            mpc-vst-plugins/tools/build_port.sh "$PWD/$v" all
+          done
+      - name: Upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: op1-fx-mpc
+          path: |
+            plugins/*/mpc/build/*.so
+            plugins/*/mpc/build/aarch64/*.so
+            plugins/*/mpc/build/skin
+            plugins/*/mpc/build/pluginlist-entry.xml

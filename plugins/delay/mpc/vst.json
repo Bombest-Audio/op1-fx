@@ -1,0 +1,18 @@
+{
+  "name": "Delay",
+  "vendor": "bombest",
+  "uid": "BbDy",
+  "version": 1000,
+  "so": "delay.so",
+  "params": "params.json",
+  "layout": "layout.conf",
+  "art": "html",
+  "effect": true,
+  "targets": ["armv7", "aarch64"],
+  "build": {
+    "root": "..",
+    "sources": ["core/delay_core.c", "mpc/engine.c"],
+    "cflags": ["-Icore", "-O2"],
+    "libs": ["-lm", "-lpthread"]
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "name": "Voltage",
+  "params": [
+    {"key": "xor", "name": "XOR", "min": 0, "max": 1, "default": 0.046},
+    {"key": "feedback", "name": "Feedback", "min": 0, "max": 1, "default": 0.51},
+    {"key": "filter", "name": "Filter", "min": 0, "max": 1, "default": 0},
+    {"key": "detune", "name": "Detune", "min": 0, "max": 1, "default": 0.463},
+    {"key": "attack", "name": "Attack", "min": 0, "max": 1, "default": 0.195},
+    {"key": "env_decay", "name": "Env Decay", "min": 0, "max": 1, "default": 0.577},
+    {"key": "sustain", "name": "Sustain", "min": 0, "max": 1, "default": 0.8},
+    {"key": "release", "name": "Release", "min": 0, "max": 1, "default": 0.539},
+    {"key": "level", "name": "Level", "min": -60, "max": 6, "default": 0}
+  ],
+  "sections": [
+    {"label": "Voltage", "keys": ["xor", "feedback", "filter", "detune"]},
+    {"label": "Envelope", "keys": ["attack", "env_decay", "sustain", "release", "level"]}
+  ]
+}

@@ -1,0 +1,89 @@
+{
+  "name": "Phase",
+  "params": [
+    {
+      "key": "a",
+      "name": "A",
+      "min": 0,
+      "max": 1,
+      "default": 0.2442
+    },
+    {
+      "key": "b",
+      "name": "B",
+      "min": 0,
+      "max": 1,
+      "default": 0.0
+    },
+    {
+      "key": "r",
+      "name": "R",
+      "min": 0,
+      "max": 1,
+      "default": 0.0
+    },
+    {
+      "key": "w",
+      "name": "W",
+      "min": 0,
+      "max": 1,
+      "default": 0.0
+    },
+    {
+      "key": "attack",
+      "name": "Attack",
+      "min": 0,
+      "max": 1,
+      "default": 0.189
+    },
+    {
+      "key": "decay",
+      "name": "Decay",
+      "min": 0,
+      "max": 1,
+      "default": 0.5589
+    },
+    {
+      "key": "sustain",
+      "name": "Sustain",
+      "min": 0,
+      "max": 1,
+      "default": 0.7
+    },
+    {
+      "key": "release",
+      "name": "Release",
+      "min": 0,
+      "max": 1,
+      "default": 0.5147
+    },
+    {
+      "key": "level",
+      "name": "Level",
+      "min": 0,
+      "max": 1,
+      "default": 0.8
+    }
+  ],
+  "sections": [
+    {
+      "label": "Phase",
+      "keys": [
+        "a",
+        "b",
+        "r",
+        "w"
+      ]
+    },
+    {
+      "label": "Envelope",
+      "keys": [
+        "attack",
+        "decay",
+        "sustain",
+        "release",
+        "level"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+start
+end
+tune
+loop
+attack
+decay
+sustain
+release
+level
+sample
+sample_prev
+sample_next

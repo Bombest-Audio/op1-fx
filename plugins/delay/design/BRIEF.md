@@ -1,0 +1,26 @@
+# Delay faceplate brief
+
+Canvas 1280 x 630 (the MPC plugin view size; the desktop window scales it at the same aspect ratio).
+
+- Plate color `#07080c`, ink `#e9ece8`, muted `#6c7370`, track `#23262a`.
+- Knob colors follow the OP-1 Delay screen: blue `#698eff` (TIME, the ring color on the screen), green `#00ed95` (SPEED),
+  lavender white `#dfd9ff` (FDB), red `#ff3a5d` (INPUT).
+- Type: Barlow Condensed for labels and readouts, JetBrains Mono for the small captions. The plugin draws them with the
+  system condensed fallback at 0.82 horizontal scale, as Punch does.
+- Center: a reel-to-reel tape echo machine with concentric ripple rings behind the reels, generated with Higgsfield
+  (`design/art/reel-b.png`, 1024 x 1024), scaled to 630 x 630, placed at x 325 with soft edges on a flat `#07080c` plate and
+  saved as `faceplate-bg-1280x630.png`. The alternate is `reel-a.png`. The idea comes from the OP-1 screen for Delay, which
+  is a field of expanding rings. It is an original machine, no brand, no text.
+- Left column: TIME above SPEED. Right column: FDB above INPUT. Each knob is a 240 x 250 cell: label (36 px), 270 degree ring
+  (radius 74, stroke 6.2), readout (76 px), caption (12 px mono). Wordmark DELAY top left at (48, 24) with TAPE ECHO under it.
+- The TIME readout is the real delay in ms (or seconds above 1 s), so it also moves with SPEED. The SPEED readout is the
+  tape speed in percent after the 8 s ceiling.
+- Animation (restrained): the core reports the peak echo level. A soft blue glow at the ripple center (640, 200) follows it,
+  and each new echo sends one thin blue ring outward, slower when the tape is slow. Idle, nothing moves.
+
+Source of truth for the layout is the Claude Design project "Delay faceplate" (`Delay.dc.html`), where the art is a
+striped placeholder because the image is not uploaded there: https://claude.ai/design/p/64d6c1fd-0599-4af5-a841-2283bef18cae
+Claude Design's standalone MCP server stops working on 2026-12-14, so the layout is also described here.
+
+`editor-preview.png` is the editor rendered with echoes showing, `editor-rest.png` is the idle state. Both come from the
+`DelaySnapshot` dev target.

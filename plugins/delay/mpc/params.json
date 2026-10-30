@@ -1,0 +1,12 @@
+{
+  "name": "Delay",
+  "params": [
+    {"key": "time", "name": "Time", "min": 0, "max": 1, "default": 0.244},
+    {"key": "speed", "name": "Speed", "min": 0, "max": 1, "default": 0.244},
+    {"key": "fdb", "name": "Fdb", "min": 0, "max": 1, "default": 0.244},
+    {"key": "input", "name": "Input", "min": 0, "max": 1, "default": 0.244}
+  ],
+  "sections": [
+    {"label": "Delay", "keys": ["time", "speed", "fdb", "input"]}
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "name": "Sampler",
+  "params": [
+    {"key": "start", "name": "Start", "min": 0, "max": 1, "default": 0},
+    {"key": "end", "name": "End", "min": 0, "max": 1, "default": 1},
+    {"key": "tune", "name": "Tune", "min": 0, "max": 1, "default": 0.5},
+    {"key": "loop", "name": "Loop", "min": 0, "max": 1, "default": 0},
+    {"key": "attack", "name": "Attack", "min": 0, "max": 1, "default": 0.1505},
+    {"key": "decay", "name": "Decay", "min": 0, "max": 1, "default": 0.7505},
+    {"key": "sustain", "name": "Sustain", "min": 0, "max": 1, "default": 1},
+    {"key": "release", "name": "Release", "min": 0, "max": 1, "default": 0.5147},
+    {"key": "level", "name": "Level", "min": 0, "max": 1, "default": 0.8},
+    {"key": "sample", "name": "Sample", "min": 0, "max": 31, "default": 0, "display": "int", "dynamic_display": true},
+    {"key": "sample_prev", "name": "Sample Prev", "min": 0, "max": 1, "momentary": true, "step_of": "sample", "step_delta": -1},
+    {"key": "sample_next", "name": "Sample Next", "min": 0, "max": 1, "momentary": true, "step_of": "sample", "step_delta": 1}
+  ],
+  "sections": [
+    {"label": "Sampler", "keys": ["start", "end", "tune", "loop", "sample", "sample_prev", "sample_next"]},
+    {"label": "Envelope", "keys": ["attack", "decay", "sustain", "release", "level"]}
+  ]
+}

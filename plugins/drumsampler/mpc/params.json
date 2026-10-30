@@ -1,0 +1,131 @@
+{
+  "name": "DrumSampler",
+  "params": [
+    {
+      "key": "slot",
+      "name": "Slot",
+      "min": 1,
+      "max": 24,
+      "default": 1,
+      "display": "int",
+      "refresh_display": true
+    },
+    {
+      "key": "sample",
+      "name": "Sample",
+      "min": 0,
+      "max": 63,
+      "default": 0,
+      "display": "int"
+    },
+    {
+      "key": "pitch",
+      "name": "Pitch",
+      "min": 0,
+      "max": 1,
+      "default": 0.5
+    },
+    {
+      "key": "start",
+      "name": "Start",
+      "min": 0,
+      "max": 1,
+      "default": 0
+    },
+    {
+      "key": "end",
+      "name": "End",
+      "min": 0,
+      "max": 1,
+      "default": 1
+    },
+    {
+      "key": "mode",
+      "name": "Mode",
+      "min": 0,
+      "max": 2,
+      "default": 1,
+      "display": "int"
+    },
+    {
+      "key": "reverse",
+      "name": "Reverse",
+      "min": 0,
+      "max": 1,
+      "default": 0,
+      "display": "int"
+    },
+    {
+      "key": "gain",
+      "name": "Slot Level",
+      "min": 0,
+      "max": 1,
+      "default": 0.5
+    },
+    {
+      "key": "attack",
+      "name": "Attack",
+      "min": 0,
+      "max": 1,
+      "default": 0
+    },
+    {
+      "key": "decay",
+      "name": "Decay",
+      "min": 0,
+      "max": 1,
+      "default": 0.6059
+    },
+    {
+      "key": "sustain",
+      "name": "Sustain",
+      "min": 0,
+      "max": 1,
+      "default": 1
+    },
+    {
+      "key": "release",
+      "name": "Release",
+      "min": 0,
+      "max": 1,
+      "default": 0.3648
+    },
+    {
+      "key": "level",
+      "name": "Level",
+      "min": 0,
+      "max": 1,
+      "default": 0.85
+    }
+  ],
+  "sections": [
+    {
+      "label": "Drum",
+      "keys": [
+        "slot",
+        "pitch",
+        "start",
+        "end",
+        "mode"
+      ]
+    },
+    {
+      "label": "Slot",
+      "keys": [
+        "sample",
+        "reverse",
+        "gain"
+      ]
+    },
+    {
+      "label": "Envelope",
+      "keys": [
+        "attack",
+        "decay",
+        "sustain",
+        "release",
+        "level"
+      ]
+    }
+  ]
+}

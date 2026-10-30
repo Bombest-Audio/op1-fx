@@ -1,0 +1,19 @@
+{
+  "name": "DNA",
+  "params": [
+    {"key": "mutate", "name": "Mutate", "min": -1, "max": 1, "default": -0.4883},
+    {"key": "bits", "name": "Bits", "min": 0, "max": 1, "default": 0.1526},
+    {"key": "sub", "name": "Sub", "min": 0, "max": 1, "default": 0},
+    {"key": "grit", "name": "Grit", "min": 0, "max": 1, "default": 0.0313},
+    {"key": "attack", "name": "Attack", "min": 0, "max": 1, "default": 0.08138},
+    {"key": "decay", "name": "Decay", "min": 0, "max": 1, "default": 0.78484},
+    {"key": "sustain", "name": "Sustain", "min": 0, "max": 1, "default": 0.7},
+    {"key": "release", "name": "Release", "min": 0, "max": 1, "default": 0.64827},
+    {"key": "level", "name": "Level", "min": 0, "max": 1, "default": 0.8},
+    {"key": "bend", "name": "Bend Range", "min": 1, "max": 12, "default": 2, "display": "int"}
+  ],
+  "sections": [
+    {"label": "Genome", "keys": ["mutate", "bits", "sub", "grit"]},
+    {"label": "Amp", "keys": ["attack", "decay", "sustain", "release", "level", "bend"]}
+  ]
+}

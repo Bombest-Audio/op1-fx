@@ -1,0 +1,5 @@
+*.wcg
+.DS_Store
+.deps/
+build/
+dist/
