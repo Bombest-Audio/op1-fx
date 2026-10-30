@@ -14,3 +14,15 @@ Canvas 1280 x 630 (the MPC plugin view size; the desktop window scales it at the
 
 Source of truth for the layout is the Claude Design project "Punch faceplate" (`Punch.dc.html`). Interactions: drag a knob
 vertically, 220 px for the full range.
+
+## MPC animation
+
+The MPC skin moves like the OP-1 screen for this engine (`display/mllp.svg`, the boxer). `mpc/make_art.py` regenerates every strip in `mpc/images/` with Pillow, all in this plugin's own look.
+
+- FREQ (violet): a needle sweeping a 270 degree tick dial. Recovered from the OP-1: its blue needle on green ticks is the FREQ dial.
+- PUNCH (red): a burst of rays that grows with the knob. The OP-1 has four rays by the glove; the exact mapping is not recoverable, so I designed it.
+- ROUNDS (mint): a ladder of bars that fills up. The OP-1 has a ladder of ten green bars; I use 24 cells because the knob has 24 rounds.
+- POWER (red): shock arcs that light up and thicken going outward. Designed, the OP-1 shows the glove art here.
+- Signal (`act`): a halo, two rings and six sparks around the lead glove. The level axis grows them, the knob axis turns the sparks a little. Nothing is drawn at silence.
+
+Each knob strip is a display-only `meter` on the knob's own key, 33 frames, placed beside its knob. The faceplate background is unchanged.

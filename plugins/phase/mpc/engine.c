@@ -3,6 +3,7 @@
  * int16 stereo at 44.1 kHz. With SAMPLE_ACCURATE it calls render() with any 1..128 frames, so a note starts at
  * its place inside the block. phase_render() takes any frame count and gives the same output for any split. */
 #include "engine.h"
+#include "op1fx_act.h"
 #include "phase_core.h"
 
 #include <math.h>
@@ -197,11 +198,11 @@ static void eng_render(void *inst, int16_t *out_lr, int frames)
 }
 
 /* Instrument: no process(). Add it last, the struct is positional. */
-static const mpc_engine_t ENGINE = {
+static const mpc_engine_t ENGINE_BASE = {
     eng_create, eng_destroy, eng_midi, eng_set_param, eng_get_param, eng_render, NULL, NULL,
 };
 
 const mpc_engine_t *mpc_engine(void)
 {
-    return &ENGINE;
+    return op1_act_wrap(&ENGINE_BASE, "a");
 }

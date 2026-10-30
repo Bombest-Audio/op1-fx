@@ -3,6 +3,7 @@
  * in blocks of 1 to 128 frames (SAMPLE_ACCURATE) at 44.1 kHz. The three envelope time knobs travel as 0 to 1 and are
  * mapped to seconds with dna_time_seconds(), the same mapping the desktop plugin uses. */
 #include "engine.h"
+#include "op1fx_act.h"
 #include "dna_core.h"
 
 #include <stdio.h>
@@ -158,11 +159,11 @@ static void eng_render(void *inst, int16_t *out_lr, int frames)
     }
 }
 
-static const mpc_engine_t ENGINE = {
+static const mpc_engine_t ENGINE_BASE = {
     eng_create, eng_destroy, eng_midi, eng_set_param, eng_get_param, eng_render, NULL, NULL,
 };
 
 const mpc_engine_t *mpc_engine(void)
 {
-    return &ENGINE;
+    return op1_act_wrap(&ENGINE_BASE, "mutate");
 }

@@ -54,6 +54,7 @@ private:
     std::atomic<float>* delay_ = nullptr;
     std::atomic<float>* fdback_ = nullptr;
     std::atomic<float>* sideband_ = nullptr;
+    std::atomic<float>* mix_ = nullptr;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(CwoAudioProcessor)
 };

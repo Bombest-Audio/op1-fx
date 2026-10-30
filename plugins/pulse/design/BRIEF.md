@@ -21,3 +21,14 @@ Canvas 1280 x 630 (the MPC plugin view size; the desktop window scales it at the
 Layout source: the Claude Design project "Pulse faceplate" (`Pulse.dc.html`, link in the README). It shows the layout with a
 striped placeholder where the Higgsfield picture goes, because the 400 KB picture is not uploaded there. Interactions: drag a knob
 vertically, 220 px for the full range, double-click for the default.
+
+## MPC animation
+
+The MPC skin (`mpc/`) moves like the OP-1 pulse screen (`display/pls.svg`), redrawn in my own neon style. `mpc/make_art.py` regenerates every image. The neon picture is replaced by an empty stage (`mpc/images/bg.png`) so the elements can move; the JUCE plugin still uses `design/art/faceplate-bg-1280x630.png`.
+
+- Blue pulse train follows SHAPE: resting width from square to thin (33 frames). Element recovered from the OP-1 blue curve, the width mapping comes from the core.
+- Green dashed span with two dots follows SWEEP: the dots move apart with LFO depth. The OP-1 green dashed line and dots are recovered, the travel is invented.
+- White twin brackets follow RATE: the gap between them is the LFO period, tight when fast. Recovered from the white t-bars, mapping invented.
+- Orange stepped bars follow DETUNE: flat at zero, steps rise for plus and drop for minus. Recovered from the pink bars, mapping invented.
+- Cyan bloom on the train follows the output level (64 frame `act`, shape step x level step). Silent means nothing drawn. Loud notes add a wider halo and small sparks on the pulse tops.
+- A clear `guard.png` meter on `act` covers the three small meters so stray touches do not move a knob.

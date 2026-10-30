@@ -2,6 +2,7 @@
  * Parameters arrive as key/value strings. MIDI arrives as raw messages. Audio leaves as interleaved
  * int16 stereo at 44.1 kHz in blocks of 1 to 128 frames (SAMPLE_ACCURATE is set in vst.json). */
 #include "engine.h"
+#include "op1fx_act.h"
 #include "dsynth_core.h"
 
 #include <math.h>
@@ -167,11 +168,11 @@ static void eng_render(void *inst, int16_t *out_lr, int frames)
     }
 }
 
-static const mpc_engine_t ENGINE = {
+static const mpc_engine_t ENGINE_BASE = {
     eng_create, eng_destroy, eng_midi, eng_set_param, eng_get_param, eng_render, NULL, NULL,
 };
 
 const mpc_engine_t *mpc_engine(void)
 {
-    return &ENGINE;
+    return op1_act_wrap(&ENGINE_BASE, "mod");
 }

@@ -2,6 +2,7 @@
  * The wrapper hands parameters over as key/value strings and audio as interleaved int16 stereo
  * in blocks of up to 128 frames at 44.1 kHz. */
 #include "engine.h"
+#include "op1fx_act.h"
 #include "cwo_core.h"
 
 #include <stdio.h>
@@ -24,6 +25,7 @@ static void *eng_create(const char *data_dir)
     p->params.delay = CWO_DEFAULT_DELAY;
     p->params.fdback = CWO_DEFAULT_FDBACK;
     p->params.sideband = CWO_DEFAULT_SIDEBAND;
+    p->params.mix = CWO_DEFAULT_MIX;
     cwo_set_params(&p->core, &p->params);
     cwo_reset(&p->core);
     return p;
@@ -53,6 +55,8 @@ static void eng_set_param(void *inst, const char *key, const char *val)
         p->params.fdback = v;
     else if (!strcmp(key, "sideband"))
         p->params.sideband = v;
+    else if (!strcmp(key, "mix"))
+        p->params.mix = v;
     else
         return;
     cwo_set_params(&p->core, &p->params);
@@ -69,6 +73,8 @@ static int eng_get_param(void *inst, const char *key, char *buf, int buf_len)
         return snprintf(buf, (size_t)buf_len, "%g", (double)p->params.fdback);
     if (!strcmp(key, "sideband"))
         return snprintf(buf, (size_t)buf_len, "%g", (double)p->params.sideband);
+    if (!strcmp(key, "mix"))
+        return snprintf(buf, (size_t)buf_len, "%g", (double)p->params.mix);
     /* readable value text for the MPC screen */
     if (!strcmp(key, "freq_display")) {
         const float hz = cwo_shift_hz(p->params.freq);
@@ -115,11 +121,11 @@ static void eng_process(void *inst, const int16_t *in_lr, int16_t *out_lr, int f
     }
 }
 
-static const mpc_engine_t ENGINE = {
+static const mpc_engine_t ENGINE_BASE = {
     eng_create, eng_destroy, eng_midi, eng_set_param, eng_get_param, eng_render, eng_process, NULL,
 };
 
 const mpc_engine_t *mpc_engine(void)
 {
-    return &ENGINE;
+    return op1_act_wrap(&ENGINE_BASE, "freq");
 }

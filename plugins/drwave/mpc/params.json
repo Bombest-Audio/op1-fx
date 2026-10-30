@@ -70,6 +70,13 @@
       "min": 0,
       "max": 1,
       "default": 0.9766
+    },
+    {
+      "key": "act",
+      "name": "Activity",
+      "min": 0,
+      "max": 1,
+      "default": 0
     }
   ],
   "sections": [

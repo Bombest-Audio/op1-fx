@@ -1,12 +1,51 @@
 {
   "name": "Grid",
   "params": [
-    {"key": "x", "name": "X", "min": 0, "max": 1, "default": 0.4883},
-    {"key": "y", "name": "Y", "min": 0, "max": 1, "default": 0.4883},
-    {"key": "zfb", "name": "Z FDB", "min": 0, "max": 1, "default": 0.5494},
-    {"key": "mix", "name": "Mix", "min": 0, "max": 1, "default": 0.5494}
+    {
+      "key": "x",
+      "name": "X",
+      "min": 0,
+      "max": 1,
+      "default": 0.4883
+    },
+    {
+      "key": "y",
+      "name": "Y",
+      "min": 0,
+      "max": 1,
+      "default": 0.4883
+    },
+    {
+      "key": "zfb",
+      "name": "Z FDB",
+      "min": 0,
+      "max": 1,
+      "default": 0.5494
+    },
+    {
+      "key": "mix",
+      "name": "Mix",
+      "min": 0,
+      "max": 1,
+      "default": 0.5494
+    },
+    {
+      "key": "act",
+      "name": "Activity",
+      "min": 0,
+      "max": 1,
+      "default": 0
+    }
   ],
   "sections": [
-    {"label": "Grid", "keys": ["x", "y", "zfb", "mix"]}
+    {
+      "label": "Grid",
+      "keys": [
+        "x",
+        "y",
+        "zfb",
+        "mix"
+      ]
+    }
   ]
 }

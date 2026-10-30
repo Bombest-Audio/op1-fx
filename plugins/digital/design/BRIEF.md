@@ -27,3 +27,15 @@ Interactions: drag a knob vertically, 220 px for the full range, double-click fo
 
 Claude Design project "Digital faceplate" (`Digital.dc.html`, https://claude.ai/design/p/71db94cd-4331-49cb-989e-f66e887bf7a9). The art box there is a striped placeholder, since the project cannot take the PNG from here; the knob rings are static. Claude Design's standalone MCP server stops working on
 2026-12-14, so the layout is also described here.
+
+## MPC animation
+
+The MPC skin (`mpc/`) animates the OP-1 digital screen (firmware `display/t10.svg`: one violet line and a stack of blue, green, white and red dots). I redraw it in my own style with `mpc/make_art.py` on an empty stage (`mpc/images/bg.png`, a dim static line, so the shared faceplate art is untouched). Each knob drives one filmstrip layer (33 frames) over the DIGITAL tab:
+
+- FEEDBACK (blue): the three blue echoes spread back along the line behind the head dot.
+- RATIO (green): the green dot travels up the line with a lit segment behind it.
+- DETUNE (white): the white dot slides along a rail above the line; the centre tick is zero.
+- CRUNCH (orange): glitch squares appear around the line, up to 30.
+- Signal level (`act`, 64 frames split in two strips): the violet line glows and widens, a blue glow swells at the dot, violet beads appear on the line. The knob axis of `act` is unused.
+
+From the SVG I recovered the geometry, the colours and the stacked dots. Which knob moves which element, and how, is my own mapping. Touching a knob layer moves that knob, since the layers sit over the middle of the plate. Not verified on the device.

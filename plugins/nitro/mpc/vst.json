@@ -8,11 +8,27 @@
   "layout": "layout.conf",
   "art": "html",
   "effect": true,
-  "targets": ["armv7", "aarch64"],
+  "targets": [
+    "armv7",
+    "aarch64"
+  ],
   "build": {
     "root": "..",
-    "sources": ["core/nitro_core.c", "mpc/engine.c"],
-    "cflags": ["-Icore", "-O2"],
-    "libs": ["-lm", "-lpthread"]
+    "sources": [
+      "core/nitro_core.c",
+      "mpc/engine.c"
+    ],
+    "cflags": [
+      "-Icore",
+      "-O2"
+    ],
+    "libs": [
+      "-lm",
+      "-lpthread"
+    ]
+  },
+  "defines": {
+    "HAS_DISPLAY_REV": 1,
+    "DISPLAY_REV_NO_UPDATE": 1
   }
 }

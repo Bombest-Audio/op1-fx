@@ -21,3 +21,12 @@ Canvas 1280 x 630 (the MPC plugin view size; the desktop window scales it at the
 Layout source: the Claude Design project "DrWave faceplate" (`DrWave.dc.html`, https://claude.ai/design/p/8500be8c-5d92-4526-b1de-8c45bdeaa6a3).
 It shows the layout with a striped placeholder where the Higgsfield picture goes. Interactions: drag a knob vertically, 220 px for the
 full range, double-click for the default.
+
+## MPC animation
+
+The OP-1 `drw.svg` screen asset is an empty 320x160 canvas, so the mapping below is my own, not recovered. `mpc/make_art.py` regenerates every image.
+
+- Under the mirror there are four rows, one filmstrip meter each (33 frames, 620x40, transparent), in the OP-1 knob colours: WAVE blue dot travelling along eight bank slots, BLEND green trace morphing from the wave into its mirror image, MOTION white sweep curve that starts higher and settles onto the line, FOLD orange sine that folds over itself.
+- Over the hero art, the `act` meter (64 frames, 420x190) lights the one of the eight bank lines that WAVE points at. Signal level drives the glow: at silence only a faint trace on that line, loud gives a white-blue core and a halo on all eight lines.
+- Meters are display only and sit where no knob is. The faceplate background is unchanged. I moved the TONE knob on the ENV tab to the top middle to clear a touch-area overlap.
+- Not checked on the device: the real refresh feel at about 100 ms.

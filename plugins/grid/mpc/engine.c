@@ -2,6 +2,7 @@
  * The wrapper hands parameters over as key/value strings and audio as interleaved int16 stereo
  * in blocks of up to 128 frames at 44.1 kHz. The mesh memory is allocated once per instance. */
 #include "engine.h"
+#include "op1fx_act.h"
 #include "grid_core.h"
 
 #include <stdio.h>
@@ -125,11 +126,11 @@ static void eng_process(void *inst, const int16_t *in_lr, int16_t *out_lr, int f
     }
 }
 
-static const mpc_engine_t ENGINE = {
+static const mpc_engine_t ENGINE_BASE = {
     eng_create, eng_destroy, eng_midi, eng_set_param, eng_get_param, eng_render, eng_process, NULL,
 };
 
 const mpc_engine_t *mpc_engine(void)
 {
-    return &ENGINE;
+    return op1_act_wrap(&ENGINE_BASE, "x");
 }

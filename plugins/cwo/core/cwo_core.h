@@ -27,6 +27,7 @@ typedef struct {
     float delay;    /* delay time, CWO_MIN_DELAY_MS to CWO_MAX_DELAY_MS */
     float fdback;   /* feedback gain, 0 to CWO_MAX_FEEDBACK */
     float sideband; /* 0 = lower sideband (shift down), 0.5 = ring modulation, 1 = upper sideband (shift up) */
+    float mix;      /* dry/wet, 0 = input untouched (bit exact), 1 = the full effect output */
 } cwo_params;
 
 /* OP-1 factory default (raw knob values 5000, 8192, 16384, 32767 out of 32767). */
@@ -34,6 +35,8 @@ typedef struct {
 #define CWO_DEFAULT_DELAY 0.25f
 #define CWO_DEFAULT_FDBACK 0.5f
 #define CWO_DEFAULT_SIDEBAND 1.0f
+/* Before MIX existed the output was always the full effect, which is mix 1. The default keeps that. */
+#define CWO_DEFAULT_MIX 1.0f
 
 /* One allpass section of the Hilbert pair: two samples of input and output history. */
 typedef struct {
@@ -55,7 +58,7 @@ typedef struct {
     int write_pos;
     cwo_params target;
     /* smoothed controls */
-    float s_freq, s_fdback, s_side;
+    float s_freq, s_fdback, s_side, s_mix;
     float delay_now; /* delay in samples after slew limiting */
     float smooth_coef, delay_coef;
     float act_peak; /* loudest wet sample since the last cwo_take_activity() */

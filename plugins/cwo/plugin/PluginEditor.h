@@ -44,8 +44,8 @@ private:
     double angle_ = 0.0;      // halo rotation in radians, integrated from the FREQ and SIDEBAND controls
     double phase_ = 0.0;      // slow shimmer, radians
     bool previewHold_ = false;
-    CwoKnob freq_, delay_, fdback_, sideband_;
-    std::unique_ptr<Attachment> freqA_, delayA_, fdbackA_, sidebandA_;
+    CwoKnob freq_, delay_, fdback_, sideband_, mix_;
+    std::unique_ptr<Attachment> freqA_, delayA_, fdbackA_, sidebandA_, mixA_;
     juce::ComponentBoundsConstrainer constrainer_;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(CwoAudioProcessorEditor)

@@ -23,3 +23,16 @@ Claude Design project "DBox faceplate" (`DBox.dc.html`): https://claude.ai/desig
 The art is a striped placeholder there and only the four big knobs and the pad grid are drawn, since the project cannot take
 the PNG from here. `design/editor-preview.png` is the real render. Claude Design's standalone MCP server stops working on
 2026-12-14, so the layout is also described here. Interactions: drag a knob vertically, 220 px for the full range.
+
+## MPC animation
+
+The MPC skin (`mpc/`) moves like the OP-1 screen. I read `display/dbox.svg` from the OP-1 firmware and redrew the elements in my own style with Pillow (`mpc/make_art.py` regenerates every strip). Each element is a transparent filmstrip `meter` (33 frames) bound to its knob, so it moves while the Q-Link or knob turns. Nothing is copied from the SVG.
+
+- PITCH, blue: ring with a tick that turns -135 to +135 degrees and an arc from 12 o'clock. Recovered from `p1ring` and `p1line`.
+- WAVE, green: waveform glyph morphing sine, triangle, square, with three selector pips. The OP-1 shows waveform glyphs and a green selector box; the morph is mine.
+- DECAY, white: ring with a marker and bars inside that get a longer tail. Ring and tick recovered from `w1ring` and `w1line`; the bars are mine.
+- MODE, orange: two rings, 8 detents, a tick that snaps in 45 degree steps. Rings and ticks recovered from `modering`, `redring`, `funkline`, `filtline`; the 8 step mapping is mine.
+- OSC2 tab: MIX 2 (blue ring), WAVE 2 (teal glyph), DECAY 2 (grey ring and bars), FILTER (orange low-pass curve with a cutoff marker). The ring and glyph set follows the dim second oscillator row of the screen; the filter curve is mine.
+- Signal level, all tabs: the engine-driven `act` parameter (frame = PITCH step * 8 + level step) draws an orange glow on the drum head and elliptical ripples around it. Level sets glow and ripple count, PITCH tightens the ripples and moves the tint from blue to orange. At zero level nothing is drawn, so the rest state is the plain hero art. This part is mine, the OP-1 has no level animation.
+
+The elements sit in the free area under the cube, centred at page y 500, x 400, 560, 720, 880 (150 x 150 each). Touching one moves that knob. I could not check any of it on the device.

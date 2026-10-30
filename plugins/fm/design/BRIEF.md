@@ -23,3 +23,21 @@ Source of truth for the layout is the Claude Design project "Fm faceplate" (`Fm.
 https://claude.ai/design/p/328f4ec1-26b2-4d28-af8d-cc01523aba8f). The cube art is a striped placeholder there, since the
 project cannot take the PNG from here. Interactions: drag a knob vertically, 220 px for the full range, double-click for default.
 Claude Design's standalone MCP server stops working on 2026-12-14, so the layout is also described here.
+
+## MPC animation
+
+The MPC skin moves like the OP-1 FM screen. The firmware art (`display/fm.svg`) is four isometric wireframe cubes stepped
+down a diagonal (47.6 x 23.8 px steps, outline `#698EFF`, hidden edges `#1D2040`), plus eight small glyph groups in the four
+knob colours. I redrew the cascade at 1.9x in my own style (`mpc/make_art.py`, Pillow, no SVG artwork copied). The MPC
+`bg.png` is the plate with a dim cube skeleton; the cubes baked into the shared faceplate are not used there.
+
+- RATIO (blue, 33 frames): a dot travels down the cascade through the cube bodies, cubes it reaches light their outline.
+- INDEX (green, 33 frames): the two modulator cubes (1 and 3) fill from the bottom like glass.
+- FEEDBACK (white, 33 frames): an isometric orbit around each modulator sweeps open, with a head dot at its end.
+- LAYER (orange, 33 frames): the second pair (cubes 3 and 4) fades and glows in.
+- Signal (`act`, 64 frames, two meters, top and bottom half): all cubes brighten, the output end most, links wake up. The knob
+  axis is not used.
+
+What I recovered: the cube cascade, its geometry and the blue/green/white/red colour order. What I invented: every
+knob-to-element mapping, since the decompile has no screen code and the SVG does not say which group each knob moves. The
+ENV page shows the static skeleton only (the LEVEL knob sits too close to the signal meters).

@@ -29,3 +29,15 @@ are renders from the Snapshot tool (`PhoneSnapshot out.png 1280 0.9 0.8` for the
 
 Source of truth for the layout is the Claude Design project "Phone faceplate" (`Phone.dc.html`). In that project the art is a
 striped placeholder, the art itself lives here. Interactions: drag a knob vertically, 220 px for the full range.
+
+## MPC animation
+
+The MPC skin (`mpc/`) now moves like the OP-1 Phone screen (`display/ptch.svg`). `mpc/make_art.py` regenerates every strip in `mpc/images/`. Each knob owns one element, drawn on a transparent filmstrip over the faceplate, so the Q-Link moves its own picture with no engine work.
+
+- TONE (blue): a dial track with three ticks and a dot that rides it, the travelled part lit. `tone.png`, 33 frames, left of the handset. Recovered from the OP-1 (blue pot and dial), the dot travel is my design.
+- PHONIC (green): a ring of N dots around the mic capsule, N = 1..15 (cycles per fragment). `phonic.png`, 15 frames. The OP-1 colours the mic green; the dot-count mapping is invented.
+- BAUD (lilac white): a pulse train that goes from 1 to 8 cycles as BAUD rises. `baud.png`, 31 frames, right of the handset. The OP-1 colours the chip white; the waveform mapping is invented.
+- TELEMATIC (red): ten ticks beside the speaker that wake up one by one and grow. `noise.png`, 33 frames. The tick positions are scaled from the OP-1 noise cluster; the wake order is invented.
+- Signal level: three `act` meters (`act_spk.png`, `act_mic.png`, `act_chip.png`, 64 frames each) put a glow and dashed arcs on the speaker (red, arcs go out), the mic (green, arcs come in) and the chip (blue halo). Only the level axis is used, so the knob axis repeats the same picture. Silent shows nothing, so rest is the plain art.
+
+I could not see it on the device. Checked with composites over the faceplate at three knob positions and three levels, and `test_port.sh` and `skin_check.py` both pass.

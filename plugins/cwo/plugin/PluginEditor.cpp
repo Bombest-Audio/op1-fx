@@ -99,12 +99,13 @@ CwoAudioProcessorEditor::CwoAudioProcessorEditor(CwoAudioProcessor& p)
       delay_("DELAY", "ECHO MS", kViolet,
              [](double v) { return juce::String(juce::roundToInt(cwo_delay_ms(static_cast<float>(v)))); }),
       fdback_("FDBACK", "REPEATS", kRed, [](double v) { return juce::String(juce::roundToInt(v * 100.0)); }),
-      sideband_("SIDEBAND", "LOWER TO UPPER", kMint, [](double v) { return juce::String(juce::roundToInt(v * 100.0)); })
+      sideband_("SIDEBAND", "LOWER TO UPPER", kMint, [](double v) { return juce::String(juce::roundToInt(v * 100.0)); }),
+      mix_("MIX", "DRY TO WET", kCyan, [](double v) { return juce::String(juce::roundToInt(v * 100.0)); })
 {
     background_ = juce::ImageCache::getFromMemory(BinaryData::faceplatebg1280x630_png,
                                                   BinaryData::faceplatebg1280x630_pngSize);
 
-    for (auto* k : {&freq_, &delay_, &fdback_, &sideband_})
+    for (auto* k : {&freq_, &delay_, &fdback_, &sideband_, &mix_})
     {
         addAndMakeVisible(*k);
         k->setRange(0.0, 1.0);
@@ -114,11 +115,13 @@ CwoAudioProcessorEditor::CwoAudioProcessorEditor(CwoAudioProcessor& p)
     delay_.setDoubleClickReturnValue(true, CWO_DEFAULT_DELAY);
     fdback_.setDoubleClickReturnValue(true, CWO_DEFAULT_FDBACK);
     sideband_.setDoubleClickReturnValue(true, CWO_DEFAULT_SIDEBAND);
+    mix_.setDoubleClickReturnValue(true, CWO_DEFAULT_MIX);
 
     freqA_ = std::make_unique<Attachment>(processor_.apvts, "freq", freq_);
     delayA_ = std::make_unique<Attachment>(processor_.apvts, "delay", delay_);
     fdbackA_ = std::make_unique<Attachment>(processor_.apvts, "fdback", fdback_);
     sidebandA_ = std::make_unique<Attachment>(processor_.apvts, "sideband", sideband_);
+    mixA_ = std::make_unique<Attachment>(processor_.apvts, "mix", mix_);
 
     constrainer_.setFixedAspectRatio(static_cast<double>(kDesignW / kDesignH));
     constrainer_.setSizeLimits(640, 315, 1920, 945);
@@ -226,4 +229,8 @@ void CwoAudioProcessorEditor::resized()
     place(delay_, 60.0f, 370.0f);
     place(fdback_, 980.0f, 110.0f);
     place(sideband_, 980.0f, 370.0f);
+    // MIX is a small knob in the top right corner, centred over FDBACK. The four main knobs keep their cells.
+    const float ms = 0.42f;
+    mix_.setBounds(juce::Rectangle<float>((1100.0f - 0.5f * kKnobW * ms) * s, 4.0f * s, kKnobW * ms * s,
+                                          kKnobH * ms * s).toNearestInt());
 }

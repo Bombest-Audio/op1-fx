@@ -24,3 +24,18 @@ Claude Design's standalone MCP server stops working on 2026-12-14, so the layout
 
 `editor-preview.png` is the editor rendered with echoes showing, `editor-rest.png` is the idle state. Both come from the
 `DelaySnapshot` dev target.
+
+## MPC animation
+
+The MPC skin moves like the OP-1 Delay screen, which is a field of five nested blue rings. `mpc/make_art.py` regenerates
+every strip in `mpc/images/`. Five layers sit over the faceplate, centred on the ripple at the middle of the machine:
+
+- TIME (blue, `rings.png`, 33 frames): the five rings open from tight to wide. Ring radii and centre offsets are measured
+  from the OP-1 `delay.svg`. Which parameter the OP-1 ties to the ring spread is not recoverable, so I mapped it to TIME.
+- FDB (lavender, `fdb.png`, 33 frames): arcs trail around each ring, longer with more feedback. Invented.
+- SPEED (green, `speed.png`, 33 frames): a dot orbits the middle ring, one lap over the knob range. Invented.
+- INPUT (red, `input.png`, 33 frames): a dot slides along a short track into the centre, like the OP-1 red dot on its line.
+- Level (`act.png`, 64 frames, engine driven): a soft blue glow that rises with the echo level and swells slightly with TIME.
+
+Touching the knob-driven layers moves that knob, so they sit in the middle of the plate where nobody reaches for them.
+At rest (signal zero) only the rings and the dots show. Not seen on the device.

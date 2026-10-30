@@ -19,3 +19,15 @@ Canvas 1280 x 630 (the MPC plugin view size; the desktop window scales it at the
 
 Source of truth for the layout is the Claude Design project "Grid faceplate" (`Grid.dc.html`). In that file the lattice is a
 CSS stand-in, since I did not upload the PNG there; the plugin and the MPC port use the Higgsfield art.
+
+## MPC animation
+
+The MPC skin moves like the OP-1 Grid screen. I recovered the parts from `grid.svg` in the OP-1 firmware: a 12 by 12 isometric lattice (2:1), a column of 21 red bars on the right (the mix level column, with scale ticks), a flat white diamond on a vertical track (Z FDB), and the blue X and green Y axis marks. The firmware animates them in code, not in the SVG, so the knob mappings below are mine.
+
+- X (blue): a slice across the lattice at cell 0.5 to 12 as the knob turns, everything behind it tinted blue, with a tick and dot on the top-right edge. X and Y are mesh sizes in cells in the DSP, so the overlap of the two tinted regions is the X by Y mesh.
+- Y (green): the same along the other axis, tick on the top-left edge.
+- Z FDB (white): the diamond rises along a track left of the lattice and trails 0 to 5 echoes as feedback goes up.
+- MIX (red): 21 bars lit from the bottom, one per step.
+- Signal: the `act` strip lifts the centre of the lattice into a ripple and brings in 2:1 rings and a soft glow. Level sets how far and how bright, the X knob step sets the ring phase. At silence the frame is empty.
+
+The MPC uses `mpc/images/bg.png` (a flat lattice, no hero art) so the moving elements have an empty stage. `design/art/faceplate-bg-1280x630.png` is untouched. `mpc/make_art.py` regenerates every image.

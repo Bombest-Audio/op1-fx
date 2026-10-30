@@ -38,3 +38,12 @@ It holds the layout with a striped placeholder where the pad goes. I did not run
 ## Preview
 
 `design/editor-preview.png` is a real render of the JUCE editor, made with the `DSynthSnapshot` target.
+
+## MPC animation
+
+`mpc/make_art.py` regenerates every image in `mpc/images/`. Reference: the OP-1 `dsynth.svg` screen, redrawn in my own style.
+
+- A row of four small graphics sits above the pad, each a 33 frame filmstrip on its own knob: MOD (blue) is a ring pair whose inner ring grows toward the outer ring, WAVE (green) is a waveform that morphs sine, triangle, saw, square with a 4 dot selector, DECAY (white) is an exponential tail that lengthens, FILTER (orange) is a response curve with a cutoff dot stepping through the 8 positions.
+- `images/act.png` (64 frames, 180x180, centred on the pad) is the signal pulse: cyan rings push outward and brighten with level, and ring spacing widens with the lead knob (MOD).
+- Recovered from the SVG: the big ring with an inner ring (modering/redring), the column of four dots by the oscillator (wave selector), the two oscillator rings and level boxes, the colour roles. Invented: every motion mapping, the decay curve and the filter curve. The OP-1 decompile for this engine was empty of screen logic, so none of it could be confirmed.
+- Not verified on the device.

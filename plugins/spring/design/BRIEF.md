@@ -25,3 +25,19 @@ other way, like a wave reflecting off the far end. With no signal nothing moves.
 
 Source of truth for the layout is the Claude Design project "Spring faceplate" (`Spring.dc.html`), where the art is a labeled
 placeholder because the project holds no images. Interactions: drag a knob vertically, 220 px for the full range.
+
+## MPC animation
+
+The OP-1 screen for this effect (`rymd.svg`) is four coloured words plus a red dashed column with a dot at each end. The
+firmware moves them, but the decompile (`Rymd`) holds no display code, so I only recovered which colour belongs to which
+knob: blue TONE, green TURNS, lavender DAMP, red/orange LEVEL (the column with two dots). The motions are my own design.
+
+The MPC skin (`mpc/`, all art from `mpc/make_art.py`) has five meters, drawn in my own style:
+- TONE (blue): a low-pass curve, the corner slides right as the knob opens.
+- TURNS (green): a coil that gains turns from 1.5 to 8.
+- DAMP (lavender): an echo comb, the tail shortens as damp rises (higher damp is a faster fade).
+- LEVEL (orange): the OP-1 dashed column, the two dots pull apart with the knob.
+- `act` (signal): mint glow along both coils, longer and brighter with level, with a fainter reflected wave and a few
+  sparks. The tone step tints it slightly towards blue. Nothing shows at zero signal.
+
+The four knob meters sit in a row below the tank (page y 622). Touching one moves its knob. Not checked on a device.

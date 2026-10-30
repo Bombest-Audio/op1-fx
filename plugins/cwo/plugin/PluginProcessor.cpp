@@ -7,6 +7,7 @@ const juce::ParameterID kFreq{"freq", 1};
 const juce::ParameterID kDelay{"delay", 1};
 const juce::ParameterID kFdback{"fdback", 1};
 const juce::ParameterID kSideband{"sideband", 1};
+const juce::ParameterID kMix{"mix", 1};
 } // namespace
 
 juce::AudioProcessorValueTreeState::ParameterLayout CwoAudioProcessor::createLayout()
@@ -24,6 +25,8 @@ juce::AudioProcessorValueTreeState::ParameterLayout CwoAudioProcessor::createLay
                                                       CWO_DEFAULT_FDBACK));
     layout.add(std::make_unique<AudioParameterFloat>(kSideband, "Sideband", NormalisableRange<float>(0.0f, 1.0f),
                                                       CWO_DEFAULT_SIDEBAND));
+    layout.add(std::make_unique<AudioParameterFloat>(kMix, "Mix", NormalisableRange<float>(0.0f, 1.0f),
+                                                      CWO_DEFAULT_MIX));
     return layout;
 }
 
@@ -38,6 +41,7 @@ CwoAudioProcessor::CwoAudioProcessor()
     delay_ = apvts.getRawParameterValue("delay");
     fdback_ = apvts.getRawParameterValue("fdback");
     sideband_ = apvts.getRawParameterValue("sideband");
+    mix_ = apvts.getRawParameterValue("mix");
     cwo_init(core_.get(), 44100.0f);
 }
 
@@ -45,7 +49,7 @@ void CwoAudioProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
 {
     cwo_init(core_.get(), static_cast<float>(sampleRate));
     scratch_.assign(static_cast<size_t>(juce::jmax(samplesPerBlock, 1)), 0.0f);
-    cwo_params p{freq_->load(), delay_->load(), fdback_->load(), sideband_->load()};
+    cwo_params p{freq_->load(), delay_->load(), fdback_->load(), sideband_->load(), mix_->load()};
     cwo_set_params(core_.get(), &p);
     cwo_reset(core_.get());
 }
@@ -64,7 +68,7 @@ void CwoAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::Mid
     const int n = buffer.getNumSamples();
     const int channels = buffer.getNumChannels();
 
-    cwo_params p{freq_->load(), delay_->load(), fdback_->load(), sideband_->load()};
+    cwo_params p{freq_->load(), delay_->load(), fdback_->load(), sideband_->load(), mix_->load()};
     cwo_set_params(core_.get(), &p);
 
     if (channels >= 2)

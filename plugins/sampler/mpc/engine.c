@@ -8,6 +8,7 @@
  * which publishes the decoded buffer under a mutex that render takes with trylock, so audio never waits on disk. */
 #define _GNU_SOURCE
 #include "engine.h"
+#include "op1fx_act.h"
 #include "sampler_core.h"
 #include "sampler_wav.h"
 
@@ -382,11 +383,11 @@ static void eng_render(void *inst, int16_t *out_lr, int frames)
 }
 
 /* Instrument: no process(). Add it last, the struct is positional. */
-static const mpc_engine_t ENGINE = {
+static const mpc_engine_t ENGINE_BASE = {
     eng_create, eng_destroy, eng_midi, eng_set_param, eng_get_param, eng_render, NULL, NULL,
 };
 
 const mpc_engine_t *mpc_engine(void)
 {
-    return &ENGINE;
+    return op1_act_wrap(&ENGINE_BASE, "start");
 }

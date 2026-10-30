@@ -3,6 +3,7 @@
  * With SAMPLE_ACCURATE the wrapper calls render() with any 1..128 frames. The root note, pitch bend range and
  * the other engine extras stay at their defaults on the MPC. */
 #include "engine.h"
+#include "op1fx_act.h"
 #include "dbox_core.h"
 
 #include <math.h>
@@ -234,11 +235,11 @@ static void eng_render(void *inst, int16_t *out_lr, int frames)
 }
 
 /* Instrument: no process(). */
-static const mpc_engine_t ENGINE = {
+static const mpc_engine_t ENGINE_BASE = {
     eng_create, eng_destroy, eng_midi, eng_set_param, eng_get_param, eng_render, NULL, NULL,
 };
 
 const mpc_engine_t *mpc_engine(void)
 {
-    return &ENGINE;
+    return op1_act_wrap(&ENGINE_BASE, "pitch");
 }

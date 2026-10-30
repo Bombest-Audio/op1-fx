@@ -7,12 +7,30 @@
   "params": "params.json",
   "layout": "layout.conf",
   "art": "html",
-  "targets": ["armv7", "aarch64"],
-  "defines": {"SAMPLE_ACCURATE": 1, "MODULE_SUBDIR": "\"samples\""},
+  "targets": [
+    "armv7",
+    "aarch64"
+  ],
+  "defines": {
+    "SAMPLE_ACCURATE": 1,
+    "MODULE_SUBDIR": "\"samples\"",
+    "HAS_DISPLAY_REV": 1,
+    "DISPLAY_REV_NO_UPDATE": 1
+  },
   "build": {
     "root": "..",
-    "sources": ["core/drumsampler_core.c", "core/drumsampler_kit.c", "mpc/engine.c"],
-    "cflags": ["-Icore", "-O2"],
-    "libs": ["-lm", "-lpthread"]
+    "sources": [
+      "core/drumsampler_core.c",
+      "core/drumsampler_kit.c",
+      "mpc/engine.c"
+    ],
+    "cflags": [
+      "-Icore",
+      "-O2"
+    ],
+    "libs": [
+      "-lm",
+      "-lpthread"
+    ]
   }
 }

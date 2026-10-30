@@ -1,7 +1,7 @@
 # Cwo
 
 A new take on the OP-1 CWO effect, as a plugin: a stereo delay with a single-sideband frequency shifter in its feedback loop. Four
-controls, one shared DSP core, every format from one repo.
+controls plus MIX, one shared DSP core, every format from one repo.
 
 | Format | Platform | Built from |
 |---|---|---|
@@ -11,7 +11,7 @@ controls, one shared DSP core, every format from one repo.
 
 ## Controls
 
-Names and defaults come from the OP-1 (factory values 5000, 8192, 16384, 32767 of 32767).
+Names and defaults of the first four come from the OP-1 (factory values 5000, 8192, 16384, 32767 of 32767). MIX is an addition.
 
 | Control | What it does |
 |---|---|
@@ -19,6 +19,7 @@ Names and defaults come from the OP-1 (factory values 5000, 8192, 16384, 32767 o
 | DELAY | Echo time, 1 to 600 ms. Changing it bends the pitch of the echoes. |
 | FDBACK | How much of each shifted echo goes back into the delay. Up to gain 0.92. |
 | SIDEBAND | Lower sideband at 0, ring modulation at 50, upper sideband at 100. |
+| MIX | Dry to wet, for running the effect in parallel. 0 is your input bit for bit, 100 (default) is the full effect. The echoes scale with it, the dry stays. |
 
 Each echo is shifted again by the one before it, so a small FREQ at high FDBACK gives a rising or falling spiral. The cow's halo turns with
 the shift: clockwise for the upper sideband, counter-clockwise for the lower, still at ring modulation. Its brightness follows the level of

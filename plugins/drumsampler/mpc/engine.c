@@ -12,6 +12,7 @@
  * The wrapper hands parameters over as key/value strings, MIDI as raw bytes, and wants audio as interleaved int16 stereo at
  * 44.1 kHz. With SAMPLE_ACCURATE it calls render() with any 1..128 frames. */
 #include "engine.h"
+#include "op1fx_act.h"
 #include "drumsampler_core.h"
 #include "drumsampler_kit.h"
 
@@ -431,7 +432,7 @@ static void eng_set_param(void *inst, const char *key, const char *val)
 /* The wrapper asks once per block for keys the engine changed itself (here: a slot change moves seven controls). */
 int mpc_engine_changed(void *inst, char *key, int len)
 {
-    inst_t *p = (inst_t *)inst;
+    inst_t *p = (inst_t *)((op1_act_t *)inst)->inner; /* the wrapper owns the instance pointer the host sees */
     for (int i = 0; i < NSLOT_KEYS; i++)
         if (p->changed & (1u << i)) {
             p->changed &= ~(1u << i);
@@ -526,11 +527,11 @@ static void eng_render(void *inst, int16_t *out_lr, int frames)
 }
 
 /* Instrument: no process(). Add it last, the struct is positional. */
-static const mpc_engine_t ENGINE = {
+static const mpc_engine_t ENGINE_BASE = {
     eng_create, eng_destroy, eng_midi, eng_set_param, eng_get_param, eng_render, NULL, NULL,
 };
 
 const mpc_engine_t *mpc_engine(void)
 {
-    return &ENGINE;
+    return op1_act_wrap(&ENGINE_BASE, "slot");
 }

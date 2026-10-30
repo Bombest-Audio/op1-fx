@@ -25,3 +25,22 @@ Interactions: drag a knob vertically, 220 px for the full range, double-click fo
 
 MPC skin: the five envelope knobs sit in one row at y 560 (r 26) because the plugin area is 628 px tall, so they are
 higher than in the desktop window.
+
+## MPC animation
+
+The MPC skin keeps the hero strings and adds five layers, all drawn by `mpc/make_art.py` (run it to regenerate `mpc/images/`).
+The OP-1 String screen (`st.svg`) has a perspective grid with a bank of coloured string curves, a green comb of 22 ticks,
+two white dots on grid lines and a red vertical line. I redrew the ideas in my own style, not the pixels.
+
+- PICK (blue): a ring and dot travelling up the centre strings, 33 frames. Position is the pluck point, 0 at the bridge side.
+  Invented mapping, the OP-1 blue curves are not decoded.
+- DAMP (green): a comb of 12 bars left of the bridge, more lit as damp rises, 33 frames. The comb shape (every 4th bar long)
+  comes from the OP-1 green ticks; the mapping to damp is my choice.
+- STIFF (white): a ladder of 10 partials right of the bridge. Ideal harmonic spacing is the dim guide, the white lines stretch
+  away from it with stiffness (f_n = n * sqrt(1 + B n^2)), 33 frames. Matches the white dots sliding on the OP-1 grid in spirit.
+- DECAY (orange): a ring-out trail of 20 bars, a steep drop at low decay and a near-flat tail at the top, 33 frames. The OP-1
+  uses a red vertical line for this, the trail is my version.
+- Signal (amber, `act`): a ghost of the six strings bowing in a standing wave over the lower part of the strings. Level step
+  sets the width (up to 10 px) and brightness, silent draws nothing. The pluck step moves the loudest point of the wave.
+
+I could not see it on the device. The wrapper refreshes about every 100 ms, so the wave is a slow shimmer, not a vibration.

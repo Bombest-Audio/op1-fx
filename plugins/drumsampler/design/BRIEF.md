@@ -11,3 +11,12 @@ One Higgsfield generation (`gpt_image_2_5`, job 817fd22a-b36f-4f25-8d8b-09ecaa63
 
 ## Layout (1280x630)
 Four big knobs on the sides (PITCH, IN, OUT, MODE), waveform with draggable in/out markers on top, six small knobs (ATK, DEC, SUS, REL, OUTPUT, SLOT LVL), then a 6x4 pad grid. Click a pad to select and audition it. Drag WAV files onto a pad to load them.
+
+## MPC animation
+The MPC skin (DRUM tab) now moves like the OP-1 drum screen. Everything is drawn by `mpc/make_art.py` in my own style, nothing is copied from the OP-1 SVG (`display/drum2.svg`).
+- Waveform (act, 64 frames): the OP-1 teal sample outline. The SLOT step picks one of eight drum-like shapes, the signal level brightens, glows and swells it. The shapes are mine.
+- START (green): the loop-in dot slides along a track under the waveform. The OP-1 colour, dot, ring and dashed bar are recovered, the motion is the obvious one.
+- END (white): the loop-out dot slides along a track above the waveform. Same notes.
+- PITCH (blue): a dot on a 12 step semitone ladder. The OP-1 pitch glyph is a static icon, so the ladder is invented.
+- MODE (orange): gate, one-shot, loop glyphs in 3 frames. Recovered from the OP-1 play-mode group, redrawn.
+- `mpc/images/bg.png` is the faceplate dimmed to 70 percent for legibility. The JUCE art is untouched.

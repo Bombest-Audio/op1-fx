@@ -18,3 +18,15 @@ Canvas 1280 x 630 (the MPC plugin view size; the desktop window scales it at the
 Source of truth for the layout is the Claude Design project: https://claude.ai/design/p/a152d2df-f55d-4950-a6b0-7811c5efe7f7
 Interactions: drag a knob vertically, 220 px for the full range. Double click resets to the default.
 Claude Design's standalone MCP server stops working on 2026-12-14, so the layout is also described here.
+
+## MPC animation
+
+The MPC skin moves like the OP-1 mmmf screen (`display/mmmf.svg`). Every image comes from `mpc/make_art.py`; `mpc/layout.conf` places six filmstrip meters on the plate around the bottle.
+
+- FREQ (blue): a half dial with a needle that sweeps left to right, a lit arc behind it. Recovered from the OP-1 art: a blue line pivoting on a base dot inside five radial ticks. 33 frames on `freq`.
+- RES (mint): a stack of ten bars that light from the bottom as RES rises, the last bar fades in. Recovered: the OP-1 draws ten green lines g0 to g9. 33 frames on `res`.
+- DRIVE (red): same ten-bar stack in red, flared wider toward the top. Recovered: ten red lines r0 to r9. The flare is my own. 33 frames on `drive`.
+- SHAPE (lilac): the real magnitude response of the current filter shape, computed from the shape table in `core/nitro_core.c`, morphing LP 24 through THRU and NOTCH to HP 24. Invented: the OP-1 only shows two fixed white glyphs, so this mapping is mine.
+- Signal: `act.png` is a glow at the brass valve (blue and red lobes plus a pulse ring, balance follows the FREQ step) and `mist.png` is the violet mist at the foot of the bottle (drifts with the FREQ step). Both use the engine's `act` frame (freq step * 8 + level step) and are fully transparent at silence, so the faceplate looks the same as the JUCE one at rest.
+- Touching a knob-driven meter moves that knob, they sit between the knobs and the bottle where nobody should tap.
+- Not verified on a device.

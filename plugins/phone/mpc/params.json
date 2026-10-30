@@ -1,12 +1,53 @@
 {
   "name": "Phone",
   "params": [
-    {"key": "tone", "name": "Tone", "min": 0, "max": 1, "default": 0.2441},
-    {"key": "phonic", "name": "Phonic", "min": 1, "max": 15, "default": 3, "display": "int"},
-    {"key": "baud", "name": "Baud", "min": 1, "max": 31, "default": 7, "display": "int"},
-    {"key": "telematic", "name": "Telematic", "min": 0, "max": 1, "default": 0.4883}
+    {
+      "key": "tone",
+      "name": "Tone",
+      "min": 0,
+      "max": 1,
+      "default": 0.2441
+    },
+    {
+      "key": "phonic",
+      "name": "Phonic",
+      "min": 1,
+      "max": 15,
+      "default": 3,
+      "display": "int"
+    },
+    {
+      "key": "baud",
+      "name": "Baud",
+      "min": 1,
+      "max": 31,
+      "default": 7,
+      "display": "int"
+    },
+    {
+      "key": "telematic",
+      "name": "Telematic",
+      "min": 0,
+      "max": 1,
+      "default": 0.4883
+    },
+    {
+      "key": "act",
+      "name": "Activity",
+      "min": 0,
+      "max": 1,
+      "default": 0
+    }
   ],
   "sections": [
-    {"label": "Phone", "keys": ["tone", "phonic", "baud", "telematic"]}
+    {
+      "label": "Phone",
+      "keys": [
+        "tone",
+        "phonic",
+        "baud",
+        "telematic"
+      ]
+    }
   ]
 }

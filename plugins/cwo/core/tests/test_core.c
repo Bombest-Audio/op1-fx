@@ -89,6 +89,7 @@ static void test_curves(void)
     CHECK(fabsf(CWO_DEFAULT_DELAY - 8192.0f / 32767.0f) < 1e-3f, "default delay");
     CHECK(fabsf(CWO_DEFAULT_FDBACK - 16384.0f / 32767.0f) < 1e-3f, "default fdback");
     CHECK(fabsf(CWO_DEFAULT_SIDEBAND - 1.0f) < 1e-6f, "default sideband");
+    CHECK(CWO_DEFAULT_MIX == 1.0f, "default mix is 1 (the output from before MIX existed)");
     printf("  default shift %.2f Hz, delay %.1f ms, feedback gain %.3f\n", (double)cwo_shift_hz(CWO_DEFAULT_FREQ),
            (double)cwo_delay_ms(CWO_DEFAULT_DELAY), (double)cwo_feedback_gain(CWO_DEFAULT_FDBACK));
 }
@@ -98,7 +99,7 @@ static void test_silence_and_reset(void)
     enum { N = 8192 };
     static float l[N], r[N];
     cwo_init(&g_core, 44100.0f);
-    cwo_params prm = {0.4f, 0.1f, 1.0f, 0.3f};
+    cwo_params prm = {0.4f, 0.1f, 1.0f, 0.3f, 1.0f};
     run(&g_core, &prm, l, r, N, 128);
     CHECK(peak(l, N) == 0.0f && peak(r, N) == 0.0f, "silence in must give silence out");
 
@@ -126,7 +127,7 @@ static void test_dry_before_first_echo(void)
     for (int i = 400; i < N; i++)
         l0[i] = l[i] = r0[i] = r[i] = 0.0f;
     cwo_init(&g_core, 44100.0f);
-    cwo_params prm = {0.7f, 0.0f, 0.9f, 1.0f}; /* shortest delay: 1 ms is 44.1 samples, 45 after rounding up */
+    cwo_params prm = {0.7f, 0.0f, 0.9f, 1.0f, 1.0f}; /* shortest delay: 1 ms is 44.1 samples, 45 after rounding up */
     run(&g_core, &prm, l, r, N, 128);
     const int n_dry = 40; /* inside the 44 sample minimum delay */
     CHECK(memcmp(l, l0, sizeof(float) * n_dry) == 0 && memcmp(r, r0, sizeof(float) * n_dry) == 0,
@@ -149,7 +150,7 @@ static void test_delay_time_across_rates(void)
         float *r = (float *)calloc((size_t)n, sizeof(float));
         l[0] = r[0] = 0.5f;
         cwo_init(&g_core, sr);
-        cwo_params prm = {0.0f, 0.5f, 0.0f, 1.0f}; /* no shift, no feedback: one clean echo */
+        cwo_params prm = {0.0f, 0.5f, 0.0f, 1.0f, 1.0f}; /* no shift, no feedback: one clean echo */
         run(&g_core, &prm, l, r, n, 256);
         int best = 1;
         float bp = 0;
@@ -184,7 +185,7 @@ static void test_sidebands(void)
             l[i] = r[i] = dry[i];
         }
         cwo_init(&g_core, (float)sr);
-        cwo_params prm = {fnorm, 0.0f, 0.0f, sb[s]};
+        cwo_params prm = {fnorm, 0.0f, 0.0f, sb[s], 1.0f};
         run(&g_core, &prm, l, r, N, 128);
         for (int i = 0; i < N; i++)
             l[i] -= dry[i]; /* the wet signal alone */
@@ -220,7 +221,7 @@ static void test_feedback_decays(void)
         memset(r, 0, sizeof r);
         l[0] = 0.5f;
         cwo_init(&g_core, sr);
-        cwo_params prm = {0.3f, d_norm, fbs[k], 1.0f};
+        cwo_params prm = {0.3f, d_norm, fbs[k], 1.0f, 1.0f};
         run(&g_core, &prm, l, r, N, 128);
         double e[6];
         for (int w = 0; w < 6; w++) {
@@ -243,7 +244,7 @@ static void test_feedback_decays(void)
     memset(r, 0, sizeof r);
     l[0] = 0.5f;
     cwo_init(&g_core, sr);
-    cwo_params prm = {0.3f, 0.0f, 1.0f, 1.0f};
+    cwo_params prm = {0.3f, 0.0f, 1.0f, 1.0f, 1.0f};
     run(&g_core, &prm, l, r, N, 128);
     float tail = peak(l + N - 4410, 4410);
     printf("  tail peak in the last 100 ms at full feedback, 1 ms delay: %.2e\n", (double)tail);
@@ -267,7 +268,7 @@ static void test_stays_finite_and_bounded(void)
                                 r[i] = kind == 0 ? frand() : -0.99f;
                             }
                             cwo_init(&g_core, rates[ri]);
-                            cwo_params prm = {(float)f, (float)d, (float)fb, 0.5f * (float)sb};
+                            cwo_params prm = {(float)f, (float)d, (float)fb, 0.5f * (float)sb, 1.0f};
                             run(&g_core, &prm, l, r, n, 128);
                             float pk = fmaxf(peak(l, n), peak(r, n));
                             runs++;
@@ -287,7 +288,7 @@ static void test_param_sweep_no_clicks(void)
     for (int i = 0; i < N; i++)
         l[i] = r[i] = 0.4f * sinf(2.0f * 3.14159265f * 220.0f * (float)i / 44100.0f);
     cwo_init(&g_core, 44100.0f);
-    cwo_params prm = {0.3f, 0.5f, 0.6f, 0.8f};
+    cwo_params prm = {0.3f, 0.5f, 0.6f, 0.8f, 1.0f};
     cwo_set_params(&g_core, &prm);
     cwo_reset(&g_core);
     for (int i = 0; i < N; i += 128) {
@@ -314,7 +315,7 @@ static void test_channels_independent(void)
     cwo_init(&g_core, 44100.0f);
     for (int i = 0; i < 2000; i++)
         l[i] = 0.5f * frand();
-    cwo_params prm = {0.5f, 0.05f, 0.8f, 0.5f};
+    cwo_params prm = {0.5f, 0.05f, 0.8f, 0.5f, 1.0f};
     run(&g_core, &prm, l, r, N, 128);
     CHECK(peak(r, N) == 0.0f, "a silent channel must stay silent (peak %g)", (double)peak(r, N));
     CHECK(peak(l + 100, N - 100) > 0.01f, "left channel should have echoes");
@@ -329,7 +330,7 @@ static void test_block_size_independence(void)
         ar[i] = br[i] = 0.7f * frand();
     }
     cwo_init(&g_core, 48000.0f);
-    cwo_params prm = {0.45f, 0.08f, 0.7f, 0.2f};
+    cwo_params prm = {0.45f, 0.08f, 0.7f, 0.2f, 1.0f};
     run(&g_core, &prm, a, ar, N, 1);
     cwo_init(&g_core, 48000.0f);
     run(&g_core, &prm, b, br, N, 128);
@@ -341,7 +342,7 @@ static void test_activity(void)
     enum { N = 16384 };
     static float l[N], r[N];
     cwo_init(&g_core, 44100.0f);
-    cwo_params prm = {CWO_DEFAULT_FREQ, 0.1f, CWO_DEFAULT_FDBACK, CWO_DEFAULT_SIDEBAND};
+    cwo_params prm = {CWO_DEFAULT_FREQ, 0.1f, CWO_DEFAULT_FDBACK, CWO_DEFAULT_SIDEBAND, 1.0f};
     cwo_set_params(&g_core, &prm);
     cwo_reset(&g_core);
     cwo_process(&g_core, l, r, N);
@@ -354,6 +355,113 @@ static void test_activity(void)
     CHECK(quiet == 0.0f, "silence must read as no activity (%.3f)", (double)quiet);
     CHECK(hit > 0.05f, "an echo must read as activity (%.3f)", (double)hit);
     CHECK(again == 0.0f, "taking activity must clear it");
+}
+
+/* MIX: bit-exact dry at 0, the plain effect output at 1, a straight blend between, smooth sweeps. */
+static void test_mix(void)
+{
+    enum { N = 44100 };
+    static float in_l[N], in_r[N], a[N], ar[N], b[N], br[N], w[N], wr[N];
+    for (int i = 0; i < N; i++) {
+        in_l[i] = 0.8f * sinf(2.0f * 3.14159265f * 330.0f * (float)i / 44100.0f) + 0.1f * frand();
+        in_r[i] = 0.6f * frand();
+    }
+    const cwo_params fx = {0.5f, 0.2f, 0.8f, 0.9f, 1.0f};
+
+    /* mix 0: the input, bit for bit, with every other control at an extreme setting, in odd block sizes */
+    cwo_params prm = fx;
+    prm.mix = 0.0f;
+    memcpy(a, in_l, sizeof a);
+    memcpy(ar, in_r, sizeof ar);
+    cwo_init(&g_core, 44100.0f);
+    run(&g_core, &prm, a, ar, N, 37);
+    CHECK(memcmp(a, in_l, sizeof a) == 0 && memcmp(ar, in_r, sizeof ar) == 0, "mix 0 must be bit exact dry");
+
+    /* mix 1 is the effect output */
+    memcpy(w, in_l, sizeof w);
+    memcpy(wr, in_r, sizeof wr);
+    cwo_init(&g_core, 44100.0f);
+    run(&g_core, &fx, w, wr, N, 128);
+    float diff = 0;
+    for (int i = 0; i < N; i++)
+        diff = fmaxf(diff, fabsf(w[i] - in_l[i]));
+    CHECK(diff > 0.05f, "mix 1 must change the signal (%.3f)", (double)diff);
+
+    /* mix 0.5 sits halfway between dry and the effect output */
+    prm.mix = 0.5f;
+    memcpy(b, in_l, sizeof b);
+    memcpy(br, in_r, sizeof br);
+    cwo_init(&g_core, 44100.0f);
+    run(&g_core, &prm, b, br, N, 128);
+    float worst = 0;
+    for (int i = 0; i < N; i++)
+        worst = fmaxf(worst, fabsf(b[i] - (0.5f * in_l[i] + 0.5f * w[i])));
+    printf("  mix 0.5 against the average of dry and wet: worst error %.2e\n", (double)worst);
+    CHECK(worst < 1e-4f, "mix 0.5 is not halfway between dry and wet (%.2e)", (double)worst);
+
+    /* the dry part of the blend is the same sample at the same time (no latency offset): impulse in, mix 0.5, short delay */
+    static float imp[2048], impr[2048];
+    memset(imp, 0, sizeof imp);
+    memset(impr, 0, sizeof impr);
+    imp[100] = 0.5f;
+    prm = fx;
+    prm.mix = 0.5f;
+    prm.delay = 0.3f;
+    cwo_init(&g_core, 44100.0f);
+    run(&g_core, &prm, imp, impr, 2048, 128);
+    CHECK(fabsf(imp[100] - 0.5f) < 1e-6f && imp[99] == 0.0f, "dry impulse must stay on its own sample (got %.6f)",
+          (double)imp[100]);
+
+    /* level: full-scale noise through every mix stays within +-1 */
+    float pk = 0;
+    for (int m = 0; m <= 10; m++) {
+        for (int i = 0; i < N; i++)
+            a[i] = ar[i] = 0.99f * frand();
+        prm = fx;
+        prm.fdback = 1.0f;
+        prm.mix = (float)m / 10.0f;
+        cwo_init(&g_core, 44100.0f);
+        run(&g_core, &prm, a, ar, N, 128);
+        pk = fmaxf(pk, fmaxf(peak(a, N), peak(ar, N)));
+    }
+    printf("  peak over mix 0..1 with full-scale noise: %.4f\n", (double)pk);
+    CHECK(pk <= 1.0001f, "mix sweep exceeded full scale (%.4f)", (double)pk);
+
+    /* no clicks: sweep mix up and down while a sine plays, and jump it every block */
+    enum { M = 44100 * 2 };
+    static float s[M], sr_[M];
+    for (int i = 0; i < M; i++)
+        s[i] = sr_[i] = 0.4f * sinf(2.0f * 3.14159265f * 220.0f * (float)i / 44100.0f);
+    prm = fx;
+    prm.fdback = 0.5f;
+    prm.mix = 0.0f;
+    cwo_init(&g_core, 44100.0f);
+    cwo_set_params(&g_core, &prm);
+    cwo_reset(&g_core);
+    for (int i = 0; i < M; i += 128) {
+        const int b2 = i / 128;
+        prm.mix = (b2 / 40) % 2 ? 1.0f : (b2 % 2 ? 1.0f : 0.0f); /* hard jumps for 40 blocks, then a long hold */
+        if (b2 >= 345)
+            prm.mix = 0.5f + 0.5f * sinf((float)b2 * 0.07f);   /* slow sweep for the rest */
+        cwo_set_params(&g_core, &prm);
+        cwo_process(&g_core, s + i, sr_ + i, M - i < 128 ? M - i : 128);
+    }
+    float step = 0;
+    for (int i = 1; i < M; i++)
+        step = fmaxf(step, fabsf(s[i] - s[i - 1]));
+    printf("  largest sample step with mix jumping between 0 and 1 every block: %.4f\n", (double)step);
+    CHECK(step < 0.15f, "mix changes clicked (%.4f)", (double)step);
+
+    /* settled mix 0 after a sweep is exact dry again */
+    enum { T = 22050 };
+    static float t[T], tr[T], t0[T];
+    for (int i = 0; i < T; i++)
+        t[i] = tr[i] = t0[i] = 0.3f * frand();
+    prm.mix = 0.0f;
+    cwo_set_params(&g_core, &prm);
+    cwo_process(&g_core, t, tr, T);
+    /* the smoothing needs a few hundred ms to land on 0, after that the output is the input */
+    CHECK(memcmp(t + T - 2048, t0 + T - 2048, sizeof(float) * 2048) == 0, "mix 0 did not settle to exact dry after a sweep");
 }
 
 int main(void)
@@ -369,6 +477,7 @@ int main(void)
     test_channels_independent();
     test_block_size_independence();
     test_activity();
+    test_mix();
     if (failures) {
         printf("%d FAILED\n", failures);
         return 1;

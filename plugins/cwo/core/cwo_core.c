@@ -92,6 +92,7 @@ void cwo_reset(cwo_t *p)
     p->s_freq = p->target.freq;
     p->s_fdback = p->target.fdback;
     p->s_side = p->target.sideband;
+    p->s_mix = p->target.mix;
     p->delay_now = delay_samples_for(p, p->target.delay);
     p->act_peak = 0.0f;
 }
@@ -104,6 +105,7 @@ void cwo_init(cwo_t *p, float sample_rate)
     p->target.delay = CWO_DEFAULT_DELAY;
     p->target.fdback = CWO_DEFAULT_FDBACK;
     p->target.sideband = CWO_DEFAULT_SIDEBAND;
+    p->target.mix = CWO_DEFAULT_MIX;
     p->smooth_coef = one_pole_coef(0.02f, p->sr);
     p->delay_coef = one_pole_coef(0.06f, p->sr);
 
@@ -122,6 +124,7 @@ void cwo_set_params(cwo_t *p, const cwo_params *params)
     p->target.delay = clampf(params->delay, 0.0f, 1.0f);
     p->target.fdback = clampf(params->fdback, 0.0f, 1.0f);
     p->target.sideband = clampf(params->sideband, 0.0f, 1.0f);
+    p->target.mix = clampf(params->mix, 0.0f, 1.0f);
 }
 
 float cwo_take_activity(cwo_t *p)
@@ -160,6 +163,12 @@ void cwo_process(cwo_t *p, float *left, float *right, int frames)
         p->s_freq += sm * (p->target.freq - p->s_freq);
         p->s_fdback += sm * (p->target.fdback - p->s_fdback);
         p->s_side += sm * (p->target.sideband - p->s_side);
+        p->s_mix += sm * (p->target.mix - p->s_mix);
+        /* The one-pole only approaches its target, so snap the last sliver. That makes mix 0 exactly dry and
+         * mix 1 exactly the effect output once the smoothing has settled. */
+        if (fabsf(p->target.mix - p->s_mix) < 1e-5f)
+            p->s_mix = p->target.mix;
+        const float mix = p->s_mix;
 
         /* Delay time glides toward its target like tape speeding up or slowing down. Reading speed stays between
          * 0.1x and 1.9x, so the read point is continuous and never overtakes the write point. */
@@ -201,7 +210,14 @@ void cwo_process(cwo_t *p, float *left, float *right, int frames)
                 p->act_peak = a;
 
             ch->buf[p->write_pos & BUF_MASK] = flush(soft_clip(x + fb * shifted, 1.0f, 2.0f));
-            io[c][i] = soft_clip(x + shifted, 0.9f, 1.0f);
+            /* Parallel mix. The effect output has no latency (the dry sample is in it at once), so dry and wet
+             * line up for any delay setting. At mix 0 the input passes through untouched. */
+            if (mix <= 0.0f)
+                io[c][i] = x;
+            else {
+                const float wet = soft_clip(x + shifted, 0.9f, 1.0f);
+                io[c][i] = mix >= 1.0f ? wet : x + mix * (wet - x);
+            }
         }
         p->write_pos = (p->write_pos + 1) & BUF_MASK;
     }

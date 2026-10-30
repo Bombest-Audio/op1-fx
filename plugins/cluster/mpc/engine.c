@@ -3,6 +3,7 @@
  * interleaved int16 stereo at 44.1 kHz. With SAMPLE_ACCURATE it calls render() with 1 to 128 frames,
  * so a note starts on its own sample. */
 #include "engine.h"
+#include "op1fx_act.h"
 #include "cluster_core.h"
 
 #include <stdio.h>
@@ -150,11 +151,11 @@ static void eng_render(void *inst, int16_t *out_lr, int frames)
     }
 }
 
-static const mpc_engine_t ENGINE = {
+static const mpc_engine_t ENGINE_BASE = {
     eng_create, eng_destroy, eng_midi, eng_set_param, eng_get_param, eng_render, NULL, NULL,
 };
 
 const mpc_engine_t *mpc_engine(void)
 {
-    return &ENGINE;
+    return op1_act_wrap(&ENGINE_BASE, "oscs");
 }
