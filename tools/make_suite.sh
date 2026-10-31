@@ -45,6 +45,12 @@ EOF
     python3 "$MV/tools/release.py" --so "$so" --skin "$skin" --entry "$m/build/pluginlist-entry.xml" \
         --version "$VERSION" --about "$about" --id "$id" --repo "$REPO" --license "$LICENSE_ID" -o "$STAGE/rel" >/dev/null
     unzip -q "$STAGE/rel/$name-$VERSION-mpc-aarch64.zip" -d "$STAGE/$TOP/packages"
+    # Gen1 and Force (armv7) zip for the catalog, whose main download is the armv7 asset; not part of the Gen2 suite
+    so32="$m/build/$id.so"
+    if [ -f "$so32" ] && file -b "$so32" | grep -q "32-bit.*ARM"; then
+        python3 "$MV/tools/release.py" --so "$so32" --skin "$skin" --entry "$m/build/pluginlist-entry.xml" \
+            --version "$VERSION" --about "$about" --id "$id" --repo "$REPO" --license "$LICENSE_ID" -o "$STAGE/rel" >/dev/null
+    fi
     count=$((count + 1))
 done
 [ "$count" -gt 0 ] || { echo "no plugins found" >&2; exit 1; }
