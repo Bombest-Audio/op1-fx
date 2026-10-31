@@ -5,6 +5,16 @@ namespace
 {
 constexpr int kMaxFileSeconds = 60;
 
+// JUCE's bool parameter can retain a fractional host value even though APVTS
+// restores its snapped value. Report the same 0 or 1 before and after restore.
+class SnappedBoolParameter final : public juce::AudioParameterBool
+{
+public:
+    using juce::AudioParameterBool::AudioParameterBool;
+
+    float getValue() const override { return get() ? 1.0f : 0.0f; }
+};
+
 juce::String percent(float v, int) { return juce::String(juce::roundToInt(v * 100.0f)) + "%"; }
 float fromPercent(const juce::String& t) { return t.getFloatValue() / 100.0f; }
 
@@ -45,7 +55,6 @@ juce::String DrumSamplerAudioProcessor::slotParamId(int slot, const char* what)
 
 juce::AudioProcessorValueTreeState::ParameterLayout DrumSamplerAudioProcessor::createLayout()
 {
-    using juce::AudioParameterBool;
     using juce::AudioParameterChoice;
     using juce::AudioParameterFloat;
     using juce::AudioParameterInt;
@@ -69,7 +78,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout DrumSamplerAudioProcessor::c
             Attr().withStringFromValueFunction(percent).withValueFromStringFunction(fromPercent)));
         layout.add(std::make_unique<AudioParameterChoice>(juce::ParameterID{slotParamId(s, "mode"), 1}, name + "Mode",
             juce::StringArray{"Gate", "One-shot", "Loop"}, DS_DEFAULT_MODE));
-        layout.add(std::make_unique<AudioParameterBool>(juce::ParameterID{slotParamId(s, "reverse"), 1}, name + "Reverse", false));
+        layout.add(std::make_unique<SnappedBoolParameter>(juce::ParameterID{slotParamId(s, "reverse"), 1}, name + "Reverse", false));
         layout.add(std::make_unique<AudioParameterFloat>(juce::ParameterID{slotParamId(s, "gain"), 1}, name + "Level",
             NormalisableRange<float>(0.0f, 2.0f), DS_DEFAULT_GAIN,
             Attr().withStringFromValueFunction(decibels).withValueFromStringFunction(fromDecibels)));
