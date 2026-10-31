@@ -95,15 +95,16 @@ if [ -z "${MPC_INSTALL_TEST:-}" ]; then
     pidof MPC >/dev/null && die "MPC did not stop"
 fi
 OK=0; FAIL=""
+LOG=$(mktemp) || die "cannot create a temp file"
+trap 'rm -f "$LOG"; mpc_ctl start' EXIT
 for p in packages/*/; do
     n=$(basename "$p")
-    if (cd "$p" && sh install.sh -y -n -t "$SYNTHS" >/tmp/op1-suite-install.log 2>&1); then
+    if (cd "$p" && sh install.sh -y -n -t "$SYNTHS" >"$LOG" 2>&1); then
         OK=$((OK + 1)); echo "  ok   $n"
     else
-        FAIL="$FAIL $n"; echo "  FAIL $n"; tail -n 3 /tmp/op1-suite-install.log | sed 's/^/       /'
+        FAIL="$FAIL $n"; echo "  FAIL $n"; tail -n 3 "$LOG" | sed 's/^/       /'
     fi
 done
-rm -f /tmp/op1-suite-install.log
 echo "$OK of $N installed."
 [ -z "$FAIL" ] || { echo "failed:$FAIL" >&2; exit 1; }
 echo "Starting MPC. Add the plugins from the plugin browser."
