@@ -18,11 +18,12 @@ vertically, 220 px for the full range.
 ## MPC animation
 
 The MPC skin moves like the OP-1 screen for this engine (`display/mllp.svg`, the boxer). `mpc/make_art.py` regenerates every strip in `mpc/images/` with Pillow, all in this plugin's own look.
+The Punch generator also uses NumPy and OpenCV to make the MPC-only background behind the moving glove.
 
 - FREQ (violet): a needle sweeping a 270 degree tick dial. Recovered from the OP-1: its blue needle on green ticks is the FREQ dial.
 - PUNCH (red): a burst of rays that grows with the knob. The OP-1 has four rays by the glove; the exact mapping is not recoverable, so I designed it.
 - ROUNDS (mint): a ladder of bars that fills up. The OP-1 has a ladder of ten green bars; I use 24 cells because the knob has 24 rounds.
 - POWER (red): shock arcs that light up and thicken going outward. Designed, the OP-1 shows the glove art here.
-- Signal (`act`): a halo, two rings and six sparks around the lead glove. The level axis grows them, the knob axis turns the sparks a little. Nothing is drawn at silence.
+- Signal (`act`): the forward glove extends up to 12 px on an output transient, then returns to guard. I use a slow level baseline to distinguish a hit from a sustained signal. The knob axis repeats the same eight poses. A separate MPC background removes the resting glove so the motion does not leave a double image.
 
-Each knob strip is a display-only `meter` on the knob's own key, 33 frames, placed beside its knob. The faceplate background is unchanged.
+Each knob strip is a display-only `meter` on the knob's own key, 33 frames, placed beside its knob. The desktop faceplate background is unchanged.

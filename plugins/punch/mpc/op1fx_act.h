@@ -1,6 +1,6 @@
-/* Live activity readout for the MPC skins. Wraps an engine table: after every render or process call it measures
- * the block peak and reads the plugin's lead knob, then publishes one frame number as the parameter "act".
- * The skin shows it with a filmstrip `meter`: 8 steps of lead knob times 8 steps of signal level, 64 frames
+/* Punch glove activity readout. After every render or process call it compares output peak
+ * with a slow level baseline, then publishes one frame number as the parameter "act".
+ * The skin shows it with a filmstrip `meter`: 8 steps of lead knob times 8 transient steps, 64 frames
  * (frame = knob step * 8 + level step). Only the engine writes "act", a host set_param is ignored.
  * It needs "HAS_DISPLAY_REV": 1 in vst.json, the wrapper polls display_rev about every 100 ms. */
 #pragma once
@@ -17,7 +17,8 @@
 
 typedef struct {
     void *inner;
-    float env;      /* peak follower, 0..1 */
+    float env;      /* decaying transient strength, 0..1 */
+    float baseline; /* slow output level follower, 0..1 */
     int frame;      /* 0..OP1_ACT_FRAMES-1 */
     int rev;
 } op1_act_t;
@@ -69,7 +70,8 @@ static int op1_act_get_param(void *inst, const char *key, char *buf, int buf_len
     return op1_act_base->get_param(a->inner, key, buf, buf_len);
 }
 
-/* Peak of the block, a fast attack and a fall of about 90 ms, a square root so quiet playing still shows. */
+/* A rise above the 80 ms baseline drives the glove. The 180 ms fall keeps it visible
+ * across the wrapper's roughly 100 ms display poll. Sustained level returns to guard. */
 static void op1_act_feed(op1_act_t *a, const int16_t *out, int frames)
 {
     int peak = 0;
@@ -79,8 +81,11 @@ static void op1_act_feed(op1_act_t *a, const int16_t *out, int frames)
             peak = v;
     }
     const float level = (float)peak * (1.0f / 32768.0f);
-    const float fall = powf(0.5f, (float)frames / (44100.0f * 0.09f));
-    a->env = level > a->env ? level : a->env * fall;
+    const float onset = fmaxf(0.0f, level - a->baseline);
+    const float baseline_mix = 1.0f - powf(0.5f, (float)frames / (44100.0f * 0.08f));
+    a->baseline += (level - a->baseline) * baseline_mix;
+    const float fall = powf(0.5f, (float)frames / (44100.0f * 0.18f));
+    a->env = onset > a->env * fall ? onset : a->env * fall;
 
     char buf[32];
     float knob = 0.0f;
@@ -89,7 +94,8 @@ static void op1_act_feed(op1_act_t *a, const int16_t *out, int frames)
     knob = knob < 0.0f ? 0.0f : (knob > 1.0f ? 1.0f : knob);
 
     int ks = (int)(knob * (float)(OP1_ACT_KNOB_STEPS - 1) + 0.5f);
-    int ls = (int)(sqrtf(a->env) * (float)(OP1_ACT_LEVEL_STEPS - 1) + 0.5f);
+    const float visible = a->env < 0.01f ? 0.0f : fminf(1.0f, 4.0f * a->env);
+    int ls = (int)(sqrtf(visible) * (float)(OP1_ACT_LEVEL_STEPS - 1) + 0.5f);
     ls = ls > OP1_ACT_LEVEL_STEPS - 1 ? OP1_ACT_LEVEL_STEPS - 1 : ls;
     const int frame = ks * OP1_ACT_LEVEL_STEPS + ls;
     if (frame != a->frame) {

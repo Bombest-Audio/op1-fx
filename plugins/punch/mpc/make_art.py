@@ -7,11 +7,14 @@ Mapping, after the OP-1 mllp screen (display/mllp.svg):
   punch.png  PUNCH   burst of rays growing from a point (OP-1: purple rays by the glove, mapping designed)
   rounds.png ROUNDS  ladder of bars filling up (OP-1: ten green bars, recovered; here 24 cells for 24 rounds)
   power.png  POWER   shock arcs travelling out from the glove (designed, the OP-1 shows red glove art)
-  act.png    signal  halo, rings and sparks around the lead glove; knob axis turns the sparks (designed)
+  act.png    signal  forward glove extends on transients and returns to guard (designed)
+  bg.png     MPC faceplate with the forward glove removed, so it can move cleanly
 """
 import math
 import os
 
+import cv2
+import numpy as np
 from PIL import Image, ImageChops, ImageDraw, ImageFilter
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -174,36 +177,34 @@ def power_frames(n=33):
     return out
 
 
-# ACT: signal halo around the lead glove. frame = knob step * 8 + level step -------------------------------
+# ACT: front glove translation. frame = knob step * 8 + transient step.
+def glove_layers():
+    source = Image.open(os.path.join(HERE, "../design/art/faceplate-bg-1280x630.png")).convert("RGB")
+    # Trace the forward glove and cuff. The shoulder stays on the faceplate.
+    outline = [(676, 185), (704, 169), (744, 171), (782, 178), (827, 192),
+               (863, 216), (876, 253), (867, 298), (841, 329), (794, 340),
+               (748, 333), (704, 309), (675, 280), (661, 242), (663, 210)]
+    mask = Image.new("L", source.size, 0)
+    ImageDraw.Draw(mask).polygon(outline, fill=255)
+    glove = source.convert("RGBA")
+    glove.putalpha(mask)
+    clean = cv2.inpaint(np.asarray(source), np.asarray(mask), 11, cv2.INPAINT_TELEA)
+    bg = Image.fromarray(clean)
+    bg.save(os.path.join(OUT, "bg.png"), optimize=True)
+    return glove.crop((652, 165, 892, 355))
+
+
 def act_frames():
     w, h = 240, 190
-    c = (120, 95)
+    glove = glove_layers()
     out = []
     for k in range(8):
         for l in range(8):
-            L = l / 7.0
-            if l == 0:
-                out.append(Image.new("RGBA", (w, h), (0, 0, 0, 0)))
-                continue
-            halo = new(w, h)
-            hd = ImageDraw.Draw(halo)
-            r = 58 + 18 * L
-            arc(hd, c, r, 0, 360, 10, col(RED, 0.18 + 0.30 * L))
-            rings = new(w, h)
-            rd = ImageDraw.Draw(rings)
-            for j, (rr, wd) in enumerate(((60 + 14 * L, 2.4), (74 + 12 * L, 1.8))):
-                arc(rd, c, rr, 0, 360, wd, col(RED_HI, (0.55 - 0.2 * j) * L))
-            sparks = new(w, h)
-            sd = ImageDraw.Draw(sparks)
-            off = k * (360 / 6 / 8) * 1.0
-            for i in range(6):
-                a = math.radians(off + i * 60 + 12)
-                r0 = 68 + 6 * L
-                r1 = r0 + 4 + 14 * L
-                p0 = (c[0] + r0 * math.cos(a), c[1] + r0 * math.sin(a))
-                p1 = (c[0] + r1 * math.cos(a), c[1] + r1 * math.sin(a))
-                line(sd, p0, p1, 2.4, col(VIOLET if i % 2 else RED_HI, 0.35 + 0.6 * L))
-            out.append(finish([(halo, 14), (rings, 3), (sparks, 2)], w, h))
+            # The lead knob occupies the high three frame bits; only the onset level moves the arm.
+            shift = round(12 * (l / 7.0) ** 0.75)
+            frame = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+            frame.alpha_composite(glove, (shift, -shift // 5))
+            out.append(frame)
     return out
 
 
