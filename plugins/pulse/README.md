@@ -1,5 +1,7 @@
 # Pulse
 
+![Pulse plugin editor](../../screenshots/pulse.png)
+
 A new take on the OP-1 Pulse synth engine, as an instrument plugin. Eight voices, two PWM pulse oscillators per voice, one shared DSP core, every format from one source tree.
 
 | Format | Platform | Built from |

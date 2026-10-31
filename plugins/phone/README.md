@@ -1,5 +1,7 @@
 # Phone
 
+![Phone plugin editor](../../screenshots/phone.png)
+
 A new take on the OP-1 Phone effect, as a plugin. Four controls, one shared DSP core, every format from one repo.
 
 | Format | Platform | Built from |

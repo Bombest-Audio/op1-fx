@@ -1,5 +1,7 @@
 # Delay
 
+![Delay plugin editor](../../screenshots/delay.png)
+
 A new take on the OP-1 Delay effect, as a plugin. Four controls, one shared DSP core, every format from one repo.
 
 | Format | Platform | Built from |

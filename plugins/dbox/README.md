@@ -1,5 +1,7 @@
 # DBox
 
+![DBox plugin editor](../../screenshots/dbox.png)
+
 A new take on the OP-1 dbox drum engine, as an instrument plugin: a 24 key synthesized drum kit, two oscillators and noise
 per hit, 12 voices.
 

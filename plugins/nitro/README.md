@@ -1,5 +1,7 @@
 # Nitro
 
+![Nitro plugin editor](../../screenshots/nitro.png)
+
 A new take on the OP-1 nitro effect, as a plugin. Four OP-1 controls plus a MIX knob, one shared DSP core, every format from one repo.
 
 | Format | Platform | Built from |

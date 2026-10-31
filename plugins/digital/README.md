@@ -1,5 +1,7 @@
 # Digital
 
+![Digital plugin editor](../../screenshots/digital.png)
+
 A new take on the OP-1 digital synth engine, as an instrument plugin. A feedback sine oscillator, a second sine oscillator
 with octave steps, detune and hard sync, and a bit-flipping XOR stage. Eight voices, four screen knobs, an amp envelope and
 a level control. One shared DSP core, every format from one repo.

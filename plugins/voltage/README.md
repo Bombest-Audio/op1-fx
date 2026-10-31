@@ -1,5 +1,7 @@
 # Voltage
 
+![Voltage plugin editor](../../screenshots/voltage.png)
+
 A new take on the OP-1 Voltage synth engine (Slump in the firmware, `volts` on its screen), as an instrument plugin. Four
 controls from the OP-1 screen, an amp envelope and a level knob, eight voices, one shared DSP core, every format from one repo.
 

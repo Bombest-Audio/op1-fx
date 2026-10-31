@@ -1,5 +1,7 @@
 # DSynth
 
+![DSynth plugin editor](../../screenshots/dsynth.png)
+
 A new take on the OP-1 dsynth synth engine, as an instrument plugin. Two oscillators per voice, FM between them, a pitch
 drop for the drum thump, an eight-mode filter, and eight voices.
 

@@ -1,5 +1,7 @@
 # DrWave
 
+![DrWave plugin editor](../../screenshots/drwave.png)
+
 A new take on the OP-1 "dr wave" synth engine, as an instrument plugin. Four knobs (WAVE, BLEND, MOTION, FOLD), a tone control, an amp
 envelope and a level. Eight voices. One shared C core.
 

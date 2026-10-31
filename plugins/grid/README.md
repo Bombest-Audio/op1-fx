@@ -1,5 +1,7 @@
 # Grid
 
+![Grid plugin editor](../../screenshots/grid.png)
+
 A new take on the OP-1 Grid effect, as a plugin: a 2D waveguide mesh that you feed audio and read back, with four
 controls and one shared DSP core.
 

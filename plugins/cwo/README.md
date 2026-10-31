@@ -1,5 +1,7 @@
 # Cwo
 
+![Cwo plugin editor](../../screenshots/cwo.png)
+
 A new take on the OP-1 CWO effect, as a plugin: a stereo delay with a single-sideband frequency shifter in its feedback loop. Four
 controls plus MIX, one shared DSP core, every format from one repo.
 

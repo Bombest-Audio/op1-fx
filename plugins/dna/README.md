@@ -1,5 +1,7 @@
 # DNA
 
+![DNA plugin editor](../../screenshots/dna.png)
+
 A new take on the OP-1 dna synth engine, as a plugin. A 128-bit genome is played as a one-bit wave through an exact
 anti-aliased reader, eight voices, four screen knobs (MUTATE, BITS, SUB, GRIT) plus ATTACK, DECAY, SUSTAIN, RELEASE and
 LEVEL. It is inspired by the OP-1 engine, not bit-exact. See `docs/DSP.md` for which facts came from the firmware and what

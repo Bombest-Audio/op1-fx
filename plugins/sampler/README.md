@@ -1,5 +1,7 @@
 # Sampler
 
+![Sampler plugin editor](../../screenshots/sampler.png)
+
 A new take on the OP-1 sampler synth engine (firmware codename SynthSampler). Plays one sample across the keyboard with eight
 voices. Four screen knobs: START, END, TUNE, LOOP. Plus attack, decay, sustain, release, level and a root note.
 Plugin id `sampler`, code `OpSm`, MPC uid `BbSm`.

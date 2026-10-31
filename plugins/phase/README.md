@@ -1,5 +1,7 @@
 # Phase
 
+![Phase plugin editor](../../screenshots/phase.png)
+
 An 8-voice phase-distortion synth plugin, a new take on the OP-1 "phase" engine. VST3, AU, CLAP and Standalone on macOS, plus an MPC OS VST2 port.
 
 I built it from scratch. The OP-1 decompile for this engine was empty, so the sound is my design from the screen graphic and the factory defaults. See `docs/DSP.md`.

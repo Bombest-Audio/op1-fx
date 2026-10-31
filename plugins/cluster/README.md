@@ -1,5 +1,7 @@
 # Cluster
 
+![Cluster plugin editor](../../screenshots/cluster.png)
+
 A new take on the OP-1 cluster synth engine, as an instrument plugin. Eight self-feedback sine oscillators that drift apart
 over a note. One shared DSP core, every format from one repo.
 

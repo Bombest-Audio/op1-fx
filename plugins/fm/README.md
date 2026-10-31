@@ -1,5 +1,7 @@
 # Fm
 
+![Fm plugin editor](../../screenshots/fm.png)
+
 A new take on the OP-1 FM synth engine, as an instrument plugin. Four operators, eight voices, four screen knobs, an amp
 envelope and a level control. One shared DSP core, every format from one repo.
 
