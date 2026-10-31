@@ -2,7 +2,7 @@
   "name": "Grid",
   "vendor": "bombest",
   "uid": "BbGd",
-  "version": 1000,
+  "version": 1001,
   "so": "grid.so",
   "params": "params.json",
   "layout": "layout.conf",
@@ -30,5 +30,6 @@
   "defines": {
     "HAS_DISPLAY_REV": 1,
     "DISPLAY_REV_NO_UPDATE": 1
-  }
+  },
+  "presets": "presets.json"
 }

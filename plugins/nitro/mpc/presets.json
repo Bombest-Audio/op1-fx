@@ -1,0 +1,112 @@
+{
+  "presets": [
+    {
+      "name": "Init",
+      "values": {
+        "freq": 0.01526,
+        "res": 0.0,
+        "shape": 0.46609,
+        "drive": 0.48831
+      }
+    },
+    {
+      "name": "Vocal Drive",
+      "values": {
+        "freq": 0.29276,
+        "res": 0.0,
+        "shape": 0.81818,
+        "drive": 0.54006
+      }
+    },
+    {
+      "name": "Adlib Phone",
+      "values": {
+        "freq": 0.68972,
+        "res": 0.69945,
+        "shape": 0.63636,
+        "drive": 0.6455
+      }
+    },
+    {
+      "name": "Throw Dark",
+      "values": {
+        "freq": 0.76226,
+        "res": 0.32556,
+        "shape": 0.18182,
+        "drive": 0.28868
+      }
+    },
+    {
+      "name": "Drum Crack",
+      "values": {
+        "freq": 0.1491,
+        "res": 0.0,
+        "shape": 0.72727,
+        "drive": 0.61237
+      }
+    },
+    {
+      "name": "Kick Thump",
+      "values": {
+        "freq": 0.25615,
+        "res": 0.84087,
+        "shape": 0.18182,
+        "drive": 0.5
+      }
+    },
+    {
+      "name": "Snare Snap",
+      "values": {
+        "freq": 0.59128,
+        "res": 0.60177,
+        "shape": 0.90909,
+        "drive": 0.70711
+      }
+    },
+    {
+      "name": "808 Heard",
+      "values": {
+        "freq": 0.58148,
+        "res": 0.0,
+        "shape": 0.63636,
+        "drive": 0.50827
+      }
+    },
+    {
+      "name": "808 Felt",
+      "values": {
+        "freq": 0.32701,
+        "res": 0.0,
+        "shape": 0.0,
+        "drive": 0.35355
+      }
+    },
+    {
+      "name": "Keys Telephony",
+      "values": {
+        "freq": 0.55558,
+        "res": 0.39872,
+        "shape": 0.72727,
+        "drive": 0.28868
+      }
+    },
+    {
+      "name": "Muffle Drop",
+      "values": {
+        "freq": 0.49283,
+        "res": 0.45696,
+        "shape": 0.0,
+        "drive": 0.35355
+      }
+    },
+    {
+      "name": "Resonant Wail",
+      "values": {
+        "freq": 0.61977,
+        "res": 0.93225,
+        "shape": 0.59091,
+        "drive": 0.70711
+      }
+    }
+  ]
+}

@@ -1,0 +1,112 @@
+{
+  "presets": [
+    {
+      "name": "Init",
+      "values": {
+        "freq": 0.183,
+        "punch": 0.458,
+        "rounds": 19,
+        "power": 0.855
+      }
+    },
+    {
+      "name": "Vocal Lead Lift",
+      "values": {
+        "freq": 0.6134,
+        "punch": 0.35,
+        "rounds": 8,
+        "power": 0.3
+      }
+    },
+    {
+      "name": "Ad-lib Snap",
+      "values": {
+        "freq": 0.7171,
+        "punch": 0.5,
+        "rounds": 6,
+        "power": 0.75
+      }
+    },
+    {
+      "name": "Delay Rtn Snap",
+      "values": {
+        "freq": 0.8824,
+        "punch": 0.6,
+        "rounds": 2,
+        "power": 0.6
+      }
+    },
+    {
+      "name": "Drum Bus Glue",
+      "values": {
+        "freq": 0.25,
+        "punch": 0.2,
+        "rounds": 24,
+        "power": 0.35
+      }
+    },
+    {
+      "name": "Kick Click",
+      "values": {
+        "freq": 0.7976,
+        "punch": 0.8,
+        "rounds": 3,
+        "power": 0.65
+      }
+    },
+    {
+      "name": "Kick Knock",
+      "values": {
+        "freq": 0.1723,
+        "punch": 0.3979,
+        "rounds": 8,
+        "power": 0.65
+      }
+    },
+    {
+      "name": "Snare Crack",
+      "values": {
+        "freq": 0.6495,
+        "punch": 0.236,
+        "rounds": 7,
+        "power": 0.65
+      }
+    },
+    {
+      "name": "808 Sub Punch",
+      "values": {
+        "freq": 0.0519,
+        "punch": 0.4,
+        "rounds": 20,
+        "power": 0.3
+      }
+    },
+    {
+      "name": "Keys Attack",
+      "values": {
+        "freq": 0.4671,
+        "punch": 0.1542,
+        "rounds": 24,
+        "power": 0.3
+      }
+    },
+    {
+      "name": "Hat Life",
+      "values": {
+        "freq": 0.9398,
+        "punch": 0.315,
+        "rounds": 9,
+        "power": 0.4
+      }
+    },
+    {
+      "name": "Glove Slam",
+      "values": {
+        "freq": 0.125,
+        "punch": 0.9888,
+        "rounds": 24,
+        "power": 1.0
+      }
+    }
+  ]
+}

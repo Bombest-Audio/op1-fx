@@ -5,6 +5,8 @@
 #
 # A plugin folder holds core/*.c (portable DSP), plugin/*.cpp (JUCE processor and editor) and
 # design/art/faceplate-bg-1280x630.png. plugin/Snapshot.cpp, if present, becomes a <NAME>Snapshot dev tool.
+set(OP1FX_COMMON_DIR ${CMAKE_CURRENT_LIST_DIR}/../common)
+
 function(op1fx_add_plugin)
     cmake_parse_arguments(P "SYNTH" "NAME;ID;CODE;VST3_CATEGORIES" "CLAP_FEATURES" ${ARGN})
     set(dir ${CMAKE_CURRENT_SOURCE_DIR})
@@ -54,15 +56,21 @@ function(op1fx_add_plugin)
         CLAP_ID "audio.bombest.${P_ID}"
         CLAP_FEATURES ${P_CLAP_FEATURES})
 
-    juce_add_binary_data(${P_NAME}Assets SOURCES ${dir}/design/art/faceplate-bg-1280x630.png)
+    set(preset_define "")
+    set(asset_sources ${dir}/design/art/faceplate-bg-1280x630.png)
+    if(EXISTS ${dir}/mpc/presets.json)
+        list(APPEND asset_sources ${dir}/mpc/presets.json)
+        set(preset_define OP1FX_HAS_PRESETS=1)
+    endif()
+    juce_add_binary_data(${P_NAME}Assets SOURCES ${asset_sources})
 
     file(GLOB core_sources CONFIGURE_DEPENDS ${dir}/core/*.c)
     file(GLOB plugin_sources CONFIGURE_DEPENDS ${dir}/plugin/*.cpp)
     list(FILTER plugin_sources EXCLUDE REGEX "Snapshot\\.cpp$")
 
     target_sources(${P_NAME} PRIVATE ${core_sources} ${plugin_sources})
-    target_include_directories(${P_NAME} PRIVATE ${dir}/core ${dir}/plugin)
-    target_compile_definitions(${P_NAME} PUBLIC JUCE_WEB_BROWSER=0 JUCE_USE_CURL=0 JUCE_VST3_CAN_REPLACE_VST2=0)
+    target_include_directories(${P_NAME} PRIVATE ${dir}/core ${dir}/plugin ${OP1FX_COMMON_DIR})
+    target_compile_definitions(${P_NAME} PUBLIC ${preset_define} JUCE_WEB_BROWSER=0 JUCE_USE_CURL=0 JUCE_VST3_CAN_REPLACE_VST2=0)
     target_link_libraries(${P_NAME}
         PRIVATE ${P_NAME}Assets juce::juce_audio_utils
         PUBLIC juce::juce_recommended_config_flags juce::juce_recommended_lto_flags)
@@ -71,8 +79,8 @@ function(op1fx_add_plugin)
         juce_add_console_app(${P_NAME}Snapshot PRODUCT_NAME "${P_NAME}Snapshot")
         set_target_properties(${P_NAME}Snapshot PROPERTIES EXCLUDE_FROM_ALL TRUE)
         target_sources(${P_NAME}Snapshot PRIVATE ${core_sources} ${plugin_sources} ${dir}/plugin/Snapshot.cpp)
-        target_include_directories(${P_NAME}Snapshot PRIVATE ${dir}/core ${dir}/plugin)
-        target_compile_definitions(${P_NAME}Snapshot PRIVATE JUCE_WEB_BROWSER=0 JUCE_USE_CURL=0 JUCE_STANDALONE_APPLICATION=1)
+        target_include_directories(${P_NAME}Snapshot PRIVATE ${dir}/core ${dir}/plugin ${OP1FX_COMMON_DIR})
+        target_compile_definitions(${P_NAME}Snapshot PRIVATE ${preset_define} JUCE_WEB_BROWSER=0 JUCE_USE_CURL=0 JUCE_STANDALONE_APPLICATION=1)
         target_link_libraries(${P_NAME}Snapshot PRIVATE ${P_NAME}Assets juce::juce_audio_utils juce::juce_recommended_config_flags)
     endif()
 endfunction()

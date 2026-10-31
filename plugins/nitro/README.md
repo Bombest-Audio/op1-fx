@@ -56,3 +56,7 @@ Windows builds run in GitHub Actions at the repo root.
 Faceplate layout is in the Claude Design project "Nitro faceplate". The bottle art is generated with Higgsfield and lives in
 `design/art/`. `faceplate-bg-1280x630.png` is the shared background for the plugin window and the MPC skin.
 The layout is also described in `design/BRIEF.md`.
+
+## Presets
+
+12 factory presets, picked using Devvon Terrell's mixing guidance. Preset 0 (Init) is the OP-1 default. Source of truth: `mpc/presets.json` (feeds the MPC PRESET menu and the DAW program list). Details and sources: `docs/PRESETS.md`.

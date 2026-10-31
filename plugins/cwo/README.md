@@ -66,3 +66,7 @@ Faceplate layout is in the Claude Design project "Cwo faceplate". The cow is gen
 `faceplate-bg-1280x630.png` is built from it by `design/make_faceplate.py` and is shared by the plugin window and the MPC skin. Its alpha
 channel is a mask of the cow, so the editor can draw the live halo behind it. The MPC skin came out as the cow and the floor line on the plate,
 with no halo. See `design/BRIEF.md`.
+
+## Presets
+
+12 factory presets, picked using Devvon Terrell's mixing guidance. Preset 0 (Init) is the OP-1 default. Source of truth: `mpc/presets.json` (feeds the MPC PRESET menu and the DAW program list). Details and sources: `docs/PRESETS.md`.

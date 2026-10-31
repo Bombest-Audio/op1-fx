@@ -1,0 +1,112 @@
+{
+  "presets": [
+    {
+      "name": "Init",
+      "values": {
+        "x": 0.4883,
+        "y": 0.4883,
+        "zfb": 0.5494,
+        "mix": 0.5494
+      }
+    },
+    {
+      "name": "Vocal Plate",
+      "values": {
+        "x": 0.2695,
+        "y": 0.2695,
+        "zfb": 0.85,
+        "mix": 0.28
+      }
+    },
+    {
+      "name": "Adlib Slap",
+      "values": {
+        "x": 0.3477,
+        "y": 0.3477,
+        "zfb": 0.8,
+        "mix": 0.5
+      }
+    },
+    {
+      "name": "Throw Aux 1/4",
+      "values": {
+        "x": 0.9961,
+        "y": 0.9258,
+        "zfb": 0.6,
+        "mix": 1.0
+      }
+    },
+    {
+      "name": "Drum Bus Room",
+      "values": {
+        "x": 0.1211,
+        "y": 0.1211,
+        "zfb": 0.7,
+        "mix": 0.22
+      }
+    },
+    {
+      "name": "Kick Box",
+      "values": {
+        "x": 0.9961,
+        "y": 0.0273,
+        "zfb": 0.8,
+        "mix": 0.3
+      }
+    },
+    {
+      "name": "Snare Chamber",
+      "values": {
+        "x": 0.2383,
+        "y": 0.1836,
+        "zfb": 0.85,
+        "mix": 0.4
+      }
+    },
+    {
+      "name": "808 Sub A",
+      "values": {
+        "x": 0.168,
+        "y": 0.168,
+        "zfb": 0.9,
+        "mix": 0.3
+      }
+    },
+    {
+      "name": "Keys Halo",
+      "values": {
+        "x": 0.6758,
+        "y": 0.6836,
+        "zfb": 0.7,
+        "mix": 0.5
+      }
+    },
+    {
+      "name": "Pad Cloud",
+      "values": {
+        "x": 0.5977,
+        "y": 0.3008,
+        "zfb": 0.8246,
+        "mix": 0.42
+      }
+    },
+    {
+      "name": "Hat Scatter",
+      "values": {
+        "x": 0.9961,
+        "y": 0.3164,
+        "zfb": 0.7,
+        "mix": 0.5
+      }
+    },
+    {
+      "name": "Metal Drone",
+      "values": {
+        "x": 0.0977,
+        "y": 0.1055,
+        "zfb": 0.995,
+        "mix": 0.38
+      }
+    }
+  ]
+}

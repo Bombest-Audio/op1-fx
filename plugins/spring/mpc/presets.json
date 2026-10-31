@@ -1,0 +1,112 @@
+{
+  "presets": [
+    {
+      "name": "Init",
+      "values": {
+        "tone": 0.244,
+        "turns": 0.458,
+        "damp": 0.061,
+        "level": 0.61
+      }
+    },
+    {
+      "name": "Lead Vocal",
+      "values": {
+        "tone": 0.344,
+        "turns": 0.25,
+        "damp": 0.8158,
+        "level": 0.62
+      }
+    },
+    {
+      "name": "Ballad Vocal",
+      "values": {
+        "tone": 0.2535,
+        "turns": 0.4167,
+        "damp": 0.62,
+        "level": 0.6
+      }
+    },
+    {
+      "name": "Ad-Lib Back",
+      "values": {
+        "tone": 0.656,
+        "turns": 0.7,
+        "damp": 0.8314,
+        "level": 0.61
+      }
+    },
+    {
+      "name": "Word Throw",
+      "values": {
+        "tone": 0.5313,
+        "turns": 0.75,
+        "damp": 0.5,
+        "level": 0.5928
+      }
+    },
+    {
+      "name": "Drum Bus Tight",
+      "values": {
+        "tone": 0.656,
+        "turns": 0.1667,
+        "damp": 0.9283,
+        "level": 0.62
+      }
+    },
+    {
+      "name": "Kick Click",
+      "values": {
+        "tone": 0.2012,
+        "turns": 0.9167,
+        "damp": 0.9992,
+        "level": 0.635
+      }
+    },
+    {
+      "name": "Snare Crack",
+      "values": {
+        "tone": 0.7988,
+        "turns": 0.75,
+        "damp": 0.8955,
+        "level": 0.61
+      }
+    },
+    {
+      "name": "808 Dark Room",
+      "values": {
+        "tone": 0.0,
+        "turns": 0.0833,
+        "damp": 0.7368,
+        "level": 0.62
+      }
+    },
+    {
+      "name": "Keys Dotted",
+      "values": {
+        "tone": 0.7988,
+        "turns": 0.4167,
+        "damp": 0.7047,
+        "level": 0.59
+      }
+    },
+    {
+      "name": "Pad Bar Wash",
+      "values": {
+        "tone": 0.4205,
+        "turns": 0.5,
+        "damp": 0.4096,
+        "level": 0.65
+      }
+    },
+    {
+      "name": "FX Boing Drip",
+      "values": {
+        "tone": 1.0,
+        "turns": 1.0,
+        "damp": 0.0,
+        "level": 0.6651
+      }
+    }
+  ]
+}

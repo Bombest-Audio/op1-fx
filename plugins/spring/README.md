@@ -52,3 +52,7 @@ tools/build_port.sh <this folder>/mpc/vst.json all       # armv7 and aarch64 .so
 ```
 
 Not yet done: loading the `.so` on a device, Windows, AU validation with `auval`.
+
+## Presets
+
+12 factory presets, picked using Devvon Terrell's mixing guidance. Preset 0 (Init) is the OP-1 default. Source of truth: `mpc/presets.json` (feeds the MPC PRESET menu and the DAW program list). Details and sources: `docs/PRESETS.md`.

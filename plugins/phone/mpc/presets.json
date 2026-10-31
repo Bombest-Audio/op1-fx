@@ -1,0 +1,112 @@
+{
+  "presets": [
+    {
+      "name": "Init",
+      "values": {
+        "tone": 0.2441,
+        "phonic": 3,
+        "baud": 7,
+        "telematic": 0.4883
+      }
+    },
+    {
+      "name": "Lead Sheen",
+      "values": {
+        "tone": 0.3536,
+        "phonic": 1,
+        "baud": 2,
+        "telematic": 0.22
+      }
+    },
+    {
+      "name": "Vocal Depth",
+      "values": {
+        "tone": 0.1768,
+        "phonic": 2,
+        "baud": 1,
+        "telematic": 0.26
+      }
+    },
+    {
+      "name": "Ad-lib Line",
+      "values": {
+        "tone": 0.2806,
+        "phonic": 2,
+        "baud": 3,
+        "telematic": 0.55
+      }
+    },
+    {
+      "name": "Ad-lib Throw",
+      "values": {
+        "tone": 0.1768,
+        "phonic": 5,
+        "baud": 13,
+        "telematic": 0.4
+      }
+    },
+    {
+      "name": "Drum Bus Grit",
+      "values": {
+        "tone": 0.25,
+        "phonic": 4,
+        "baud": 2,
+        "telematic": 0.32
+      }
+    },
+    {
+      "name": "Kick Knock",
+      "values": {
+        "tone": 0.5,
+        "phonic": 1,
+        "baud": 2,
+        "telematic": 0.2
+      }
+    },
+    {
+      "name": "Snare Chatter",
+      "values": {
+        "tone": 0.306,
+        "phonic": 2,
+        "baud": 3,
+        "telematic": 0.25
+      }
+    },
+    {
+      "name": "808 Translate",
+      "values": {
+        "tone": 0.433,
+        "phonic": 1,
+        "baud": 3,
+        "telematic": 0.15
+      }
+    },
+    {
+      "name": "Pad Haze",
+      "values": {
+        "tone": 0.306,
+        "phonic": 6,
+        "baud": 8,
+        "telematic": 0.42
+      }
+    },
+    {
+      "name": "Lo-Fi Moment",
+      "values": {
+        "tone": 0.236,
+        "phonic": 15,
+        "baud": 2,
+        "telematic": 0.35
+      }
+    },
+    {
+      "name": "FX Glitch",
+      "values": {
+        "tone": 0.7071,
+        "phonic": 9,
+        "baud": 27,
+        "telematic": 0.7
+      }
+    }
+  ]
+}

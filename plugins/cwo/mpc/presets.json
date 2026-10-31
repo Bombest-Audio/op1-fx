@@ -1,0 +1,124 @@
+{
+  "presets": [
+    {
+      "name": "Init",
+      "values": {
+        "freq": 0.1526,
+        "delay": 0.25,
+        "fdback": 0.5,
+        "sideband": 1.0,
+        "mix": 1.0
+      }
+    },
+    {
+      "name": "Vocal Micro Dbl",
+      "values": {
+        "freq": 0.1994,
+        "delay": 0.1947,
+        "fdback": 0.1087,
+        "sideband": 1.0,
+        "mix": 0.18
+      }
+    },
+    {
+      "name": "Vocal Swim",
+      "values": {
+        "freq": 0.1543,
+        "delay": 0.6444,
+        "fdback": 0.3478,
+        "sideband": 0.35,
+        "mix": 0.2
+      }
+    },
+    {
+      "name": "Ad-Lib Rise",
+      "values": {
+        "freq": 0.3582,
+        "delay": 0.526,
+        "fdback": 0.4348,
+        "sideband": 1.0,
+        "mix": 0.26
+      }
+    },
+    {
+      "name": "Throw Tail Sink",
+      "values": {
+        "freq": 0.2445,
+        "delay": 0.9124,
+        "fdback": 0.5435,
+        "sideband": 0.0,
+        "mix": 0.3
+      }
+    },
+    {
+      "name": "Drum Bus Feel",
+      "values": {
+        "freq": 0.524,
+        "delay": 0.428,
+        "fdback": 0.2391,
+        "sideband": 0.5,
+        "mix": 0.1
+      }
+    },
+    {
+      "name": "Kick Sub Ghost",
+      "values": {
+        "freq": 0.4132,
+        "delay": 0.526,
+        "fdback": 0.1304,
+        "sideband": 0.0,
+        "mix": 0.14
+      }
+    },
+    {
+      "name": "Snare Tail Rise",
+      "values": {
+        "freq": 0.7003,
+        "delay": 0.607,
+        "fdback": 0.6196,
+        "sideband": 1.0,
+        "mix": 0.32
+      }
+    },
+    {
+      "name": "808 Dive",
+      "values": {
+        "freq": 0.3667,
+        "delay": 0.7442,
+        "fdback": 0.6522,
+        "sideband": 0.0,
+        "mix": 0.3
+      }
+    },
+    {
+      "name": "Pad Barberpole",
+      "values": {
+        "freq": 0.1362,
+        "delay": 0.9124,
+        "fdback": 0.6522,
+        "sideband": 1.0,
+        "mix": 0.3
+      }
+    },
+    {
+      "name": "FX Ring Bell",
+      "values": {
+        "freq": 0.8661,
+        "delay": 0.3693,
+        "fdback": 0.7826,
+        "sideband": 0.5,
+        "mix": 0.8
+      }
+    },
+    {
+      "name": "FX Riser Spiral",
+      "values": {
+        "freq": 0.6553,
+        "delay": 0.6444,
+        "fdback": 0.8,
+        "sideband": 1.0,
+        "mix": 0.7
+      }
+    }
+  ]
+}

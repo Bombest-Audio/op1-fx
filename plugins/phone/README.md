@@ -57,3 +57,7 @@ Faceplate layout is in the Claude Design project "Phone faceplate". The handset 
 `design/art/`. `faceplate-bg-1280x630.png` is the shared background for the plugin window and the MPC skin. The editor
 animates the capsules and the chip with the signal, see `design/BRIEF.md`.
 Claude Design's standalone MCP server stops working on 2026-12-14, so the layout is also described in `design/BRIEF.md`.
+
+## Presets
+
+12 factory presets, picked using Devvon Terrell's mixing guidance. Preset 0 (Init) is the OP-1 default. Source of truth: `mpc/presets.json` (feeds the MPC PRESET menu and the DAW program list). Details and sources: `docs/PRESETS.md`.

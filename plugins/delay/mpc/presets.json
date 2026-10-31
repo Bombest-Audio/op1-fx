@@ -1,0 +1,112 @@
+{
+  "presets": [
+    {
+      "name": "Init",
+      "values": {
+        "time": 0.244,
+        "speed": 0.244,
+        "fdb": 0.244,
+        "input": 0.244
+      }
+    },
+    {
+      "name": "Vocal Eighth 90",
+      "values": {
+        "time": 0.510508,
+        "speed": 0.55,
+        "fdb": 0.22,
+        "input": 0.199526
+      }
+    },
+    {
+      "name": "Adlib Quarter 90",
+      "values": {
+        "time": 0.745076,
+        "speed": 0.62,
+        "fdb": 0.25,
+        "input": 0.177828
+      }
+    },
+    {
+      "name": "Abbey Throw 90",
+      "values": {
+        "time": 0.545076,
+        "speed": 0.31,
+        "fdb": 0.55,
+        "input": 0.354813
+      }
+    },
+    {
+      "name": "Slap 16th 90",
+      "values": {
+        "time": 0.436114,
+        "speed": 0.85,
+        "fdb": 0.1,
+        "input": 0.398107
+      }
+    },
+    {
+      "name": "Drum Bus 90",
+      "values": {
+        "time": 0.516993,
+        "speed": 0.75,
+        "fdb": 0.3,
+        "input": 0.251189
+      }
+    },
+    {
+      "name": "Kick Ghost 90",
+      "values": {
+        "time": 0.018622,
+        "speed": 0.2,
+        "fdb": 0.12,
+        "input": 0.199526
+      }
+    },
+    {
+      "name": "Snare Dub 90",
+      "values": {
+        "time": 0.6,
+        "speed": 0.5,
+        "fdb": 0.42,
+        "input": 0.251189
+      }
+    },
+    {
+      "name": "808 Dotted 90",
+      "values": {
+        "time": 0.252607,
+        "speed": 0.15,
+        "fdb": 0.15,
+        "input": 0.251189
+      }
+    },
+    {
+      "name": "Chorus Half 90",
+      "values": {
+        "time": 0.883007,
+        "speed": 0.5,
+        "fdb": 0.12,
+        "input": 0.354813
+      }
+    },
+    {
+      "name": "Pad Wash 90",
+      "values": {
+        "time": 0.618622,
+        "speed": 0.4,
+        "fdb": 0.4,
+        "input": 0.199526
+      }
+    },
+    {
+      "name": "FX Runaway 90",
+      "values": {
+        "time": 0.2327,
+        "speed": 0.28,
+        "fdb": 0.9,
+        "input": 0.158489
+      }
+    }
+  ]
+}

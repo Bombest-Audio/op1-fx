@@ -45,3 +45,7 @@ MPC VST2 (needs Docker):
 Layout is in the Claude Design project "Grid faceplate" and described in `design/BRIEF.md`. The lattice art is generated
 with Higgsfield and lives in `design/art/`. `faceplate-bg-1280x630.png` is the shared background for the plugin window and
 the MPC skin.
+
+## Presets
+
+12 factory presets, picked using Devvon Terrell's mixing guidance. Preset 0 (Init) is the OP-1 default. Source of truth: `mpc/presets.json` (feeds the MPC PRESET menu and the DAW program list). Details and sources: `docs/PRESETS.md`.
