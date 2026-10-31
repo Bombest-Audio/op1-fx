@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # Package all 20 OP-1 plugins as ONE zip for an MPC (Gen2, aarch64) that installs them with a single MPC stop and start.
-#   tools/make_suite.sh [version]        default 0.4.0; writes dist/mpc/OP1-Suite-<version>-mpc-aarch64.zip
+#   tools/make_suite.sh [version]        default 0.4.0; writes dist/mpc/OP1-Suite-<version>-mpc-aarch64.zip and the
+#                                        per-plugin zips in dist/mpc/release-<version>/ (OP1_REPO, OP1_LICENSE override
+#                                        the source repo and SPDX license written into each manifest)
 # Needs each plugin's MPC port built first (plugins/<id>/mpc/build/aarch64/<id>.so, via mpc-vst-plugins tools/build_port.sh).
 # Each plugin is packaged by mpc-vst-plugins tools/release.py, so every package keeps its own install.sh, checksums and
 # manifest. The suite adds install-all.sh and uninstall-all.sh, which run those per-plugin scripts between one stop and
@@ -12,6 +14,8 @@ MV="${MPC_VST_PLUGINS:-$HOME/bombest-audio/mpc-re/mpc-vst-plugins}"
 OUT="$FX/dist/mpc"
 STAGE="$(mktemp -d)"
 trap 'rm -rf "$STAGE"' EXIT
+REPO="${OP1_REPO:-Bombest-Audio/op1-fx}"   # source repo and license go into every package's catalog manifest
+LICENSE_ID="${OP1_LICENSE:-GPL-3.0-only}"
 TOP="OP1-Suite-$VERSION"
 mkdir -p "$STAGE/$TOP/packages" "$STAGE/rel"
 
@@ -39,7 +43,7 @@ EOF
     fi
     [ -n "$about" ] || about="New take on the OP-1 $id for MPC."
     python3 "$MV/tools/release.py" --so "$so" --skin "$skin" --entry "$m/build/pluginlist-entry.xml" \
-        --version "$VERSION" --about "$about" -o "$STAGE/rel" >/dev/null
+        --version "$VERSION" --about "$about" --id "$id" --repo "$REPO" --license "$LICENSE_ID" -o "$STAGE/rel" >/dev/null
     unzip -q "$STAGE/rel/$name-$VERSION-mpc-aarch64.zip" -d "$STAGE/$TOP/packages"
     count=$((count + 1))
 done
@@ -173,4 +177,8 @@ mkdir -p "$OUT"
 zip="$OUT/$TOP-mpc-aarch64.zip"
 rm -f "$zip"
 ( cd "$STAGE" && zip -qr -X "$zip" "$TOP" )
+# the per-plugin zips are what the community catalog lists; keep them next to the suite
+rel_out="$OUT/release-$VERSION"
+rm -rf "$rel_out"; mkdir -p "$rel_out"
+cp "$STAGE"/rel/*.zip "$rel_out"/
 echo "$zip ($count plugins, $(du -h "$zip" | cut -f1))"
