@@ -7,8 +7,8 @@ Mapping, after the OP-1 mllp screen (display/mllp.svg):
   punch.png  PUNCH   burst of rays growing from a point (OP-1: purple rays by the glove, mapping designed)
   rounds.png ROUNDS  ladder of bars filling up (OP-1: ten green bars, recovered; here 24 cells for 24 rounds)
   power.png  POWER   shock arcs travelling out from the glove (designed, the OP-1 shows red glove art)
-  act.png    signal  forward glove extends on transients and returns to guard (designed)
-  bg.png     MPC faceplate with the forward glove removed, so it can move cleanly
+  act.png    signal  forward fist extends on transients and returns to guard (designed)
+  bg.png     MPC faceplate with the forward fist removed, so it can move cleanly
 """
 import math
 import os
@@ -180,10 +180,10 @@ def power_frames(n=33):
 # ACT: front glove translation. frame = knob step * 8 + transient step.
 def glove_layers():
     source = Image.open(os.path.join(HERE, "../design/art/faceplate-bg-1280x630.png")).convert("RGB")
-    # Trace the forward glove and cuff. The shoulder stays on the faceplate.
-    outline = [(676, 185), (704, 169), (744, 171), (782, 178), (827, 192),
-               (863, 216), (876, 253), (867, 298), (841, 329), (794, 340),
-               (748, 333), (704, 309), (675, 280), (661, 242), (663, 210)]
+    # Trace the forward fist and cuff. The shoulder stays on the faceplate.
+    outline = [(386, 218), (398, 192), (438, 172), (478, 158), (520, 146), (556, 156),
+               (570, 190), (562, 232), (532, 256), (524, 292), (490, 312), (452, 306),
+               (418, 286), (392, 256)]
     mask = Image.new("L", source.size, 0)
     ImageDraw.Draw(mask).polygon(outline, fill=255)
     glove = source.convert("RGBA")
@@ -191,7 +191,7 @@ def glove_layers():
     clean = cv2.inpaint(np.asarray(source), np.asarray(mask), 11, cv2.INPAINT_TELEA)
     bg = Image.fromarray(clean)
     bg.save(os.path.join(OUT, "bg.png"), optimize=True)
-    return glove.crop((652, 165, 892, 355))
+    return glove.crop((358, 120, 598, 310))
 
 
 def act_frames():
@@ -203,7 +203,7 @@ def act_frames():
             # The lead knob occupies the high three frame bits; only the onset level moves the arm.
             shift = round(12 * (l / 7.0) ** 0.75)
             frame = Image.new("RGBA", (w, h), (0, 0, 0, 0))
-            frame.alpha_composite(glove, (shift, -shift // 5))
+            frame.alpha_composite(glove, (12 - shift, shift // 5))
             out.append(frame)
     return out
 
