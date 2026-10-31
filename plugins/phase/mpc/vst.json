@@ -1,7 +1,7 @@
 {
   "name": "Phase",
   "vendor": "bombest",
-  "uid": "BbPh",
+  "uid": "BbPs",
   "version": 1000,
   "so": "phase.so",
   "params": "params.json",
