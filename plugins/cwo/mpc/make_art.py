@@ -11,7 +11,7 @@ Layout of the stage (faceplate pixels):
   delay taps   cx 640, y 548       13 echo ticks spread along the floor line (knob "delay", 33 frames)
   sideband     cx 322, y 350       diamond, upper half = upper sideband (knob "sideband", 33 frames)
   fdback bars  cx 985, y 316       10 bars fill from the bottom (knob "fdback", 33 frames)
-  mix ticks    cx 1100, y 120      12 ticks fill from the left, dry to wet (knob "mix", 33 frames)
+  mix ticks    cx 940, y 62, beside the MIX knob     12 ticks fill from the left, dry to wet (knob "mix", 33 frames)
 """
 import math
 from pathlib import Path
@@ -44,7 +44,7 @@ FREQ = dict(cx=640, cy=44, w=380, h=44, pad=22)
 ARC = dict(cx=640, cy=165, w=700, h=190, ecx=350, ecy=188, rx=300, ry=150, n=37, pitch=5.0)
 TAPS = dict(cx=640, cy=530, w=620, h=40, x0=30, span=560, base=34, n=13)
 SIDE = dict(cx=322, cy=350, w=90, h=120)
-MIXS = dict(cx=1100, cy=120, w=120, h=22, n=12, tw=4, th=14, pitch=10)
+MIXS = dict(cx=940, cy=62, w=120, h=22, n=12, tw=4, th=14, pitch=10)
 CYAN = (0x4F, 0xD8, 0xFF)
 BARS = dict(cx=985, cy=316, w=56, h=310, n=10, bw=40, bh=11, pitch=29)
 FLOOR_Y = 548
