@@ -44,8 +44,8 @@ private:
     float level_ = 0.0f;   // follows the input level: rises quickly, falls over about 300 ms
     double phase_ = 0.0;   // slow idle drift, radians
     bool hold_ = false;
-    NitroKnob freq_, res_, shape_, drive_;
-    std::unique_ptr<Attachment> freqA_, resA_, shapeA_, driveA_;
+    NitroKnob freq_, res_, shape_, drive_, mix_;
+    std::unique_ptr<Attachment> freqA_, resA_, shapeA_, driveA_, mixA_;
     juce::ComponentBoundsConstrainer constrainer_;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NitroAudioProcessorEditor)

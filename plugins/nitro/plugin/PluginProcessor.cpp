@@ -7,6 +7,7 @@ const juce::ParameterID kFreq{"freq", 1};
 const juce::ParameterID kRes{"res", 1};
 const juce::ParameterID kShape{"shape", 1};
 const juce::ParameterID kDrive{"drive", 1};
+const juce::ParameterID kMix{"mix", 1};
 } // namespace
 
 juce::AudioProcessorValueTreeState::ParameterLayout NitroAudioProcessor::createLayout()
@@ -24,6 +25,8 @@ juce::AudioProcessorValueTreeState::ParameterLayout NitroAudioProcessor::createL
                                                       NITRO_DEFAULT_SHAPE));
     layout.add(std::make_unique<AudioParameterFloat>(kDrive, "Drive", NormalisableRange<float>(0.0f, 1.0f),
                                                       NITRO_DEFAULT_DRIVE));
+    layout.add(std::make_unique<AudioParameterFloat>(kMix, "Mix", NormalisableRange<float>(0.0f, 1.0f),
+                                                      NITRO_DEFAULT_MIX));
     return layout;
 }
 
@@ -37,12 +40,13 @@ NitroAudioProcessor::NitroAudioProcessor()
     res_ = apvts.getRawParameterValue("res");
     shape_ = apvts.getRawParameterValue("shape");
     drive_ = apvts.getRawParameterValue("drive");
+    mix_ = apvts.getRawParameterValue("mix");
     nitro_init(&core_, 44100.0f);
 }
 
 nitro_params NitroAudioProcessor::currentParams() const noexcept
 {
-    return {freq_->load(), res_->load(), shape_->load(), drive_->load()};
+    return {freq_->load(), res_->load(), shape_->load(), drive_->load(), mix_->load()};
 }
 
 void NitroAudioProcessor::prepareToPlay(double sampleRate, int)

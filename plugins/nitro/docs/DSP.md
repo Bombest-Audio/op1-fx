@@ -36,7 +36,10 @@ A 4-stage cascade of trapezoidal (TPT) one-pole low-passes, with the feedback fr
    At RES 1 and DRIVE 1 the loop passes 4.0 and rings on its own. The input gain is raised by `1 + 0.35 fb` so the level holds.
 3. SHAPE crossfades linearly between 12 rows of stage-output mixes: LP 24, LP 18, LP 12, LP 6, THRU, HP 6+, NOTCH, BAND,
    HP 6, HP 12, HP 18, HP 24. The mixes are plain sums, such as the binomial rows for the high-pass slopes.
-4. FREQ is exponential, 14 Hz to 16 kHz. All four parameters are smoothed over 5 ms. The filter coefficient is recomputed
+MIX is mine, not an OP-1 control. It is a linear blend of the untouched input and the filtered output, `dry*(1-m) + wet*m`,
+   smoothed over 5 ms like the others. The filter keeps running at MIX 0 so its state is continuous when MIX moves. MIX 1 is
+   bit-identical to the fully wet signal and MIX 0 is a bit-exact bypass (`test_mix` checks both). The default is 1.
+4. FREQ is exponential, 14 Hz to 16 kHz. All five parameters are smoothed over 5 ms. The filter coefficient is recomputed
    per sample from `tan`, so sweeps do not click.
 5. The activity value for the editor is the input peak follower.
 

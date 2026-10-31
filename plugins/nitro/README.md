@@ -1,6 +1,6 @@
 # Nitro
 
-A new take on the OP-1 nitro effect, as a plugin. Four controls, one shared DSP core, every format from one repo.
+A new take on the OP-1 nitro effect, as a plugin. Four OP-1 controls plus a MIX knob, one shared DSP core, every format from one repo.
 
 | Format | Platform | Built from |
 |---|---|---|
@@ -19,6 +19,7 @@ Names come from the OP-1 screen. Factory values are 500, 0, 10500 and 16000 of 3
 | RES | Feedback around the four stages. At full RES with full DRIVE it rings on its own. |
 | SHAPE | Morphs from low pass 24 through pass-through and notch or band to high pass 24. |
 | DRIVE | Gain into the filter, with a soft ceiling. |
+| MIX | Dry to wet, 0 to 100. 100 is the plain OP-1 sound and the default; 0 passes the input untouched. The OP-1 has no such control. |
 
 ## DSP
 

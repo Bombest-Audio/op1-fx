@@ -78,6 +78,7 @@ void nitro_reset(nitro_t *n)
     n->s_res = n->target.res;
     n->s_shape = n->target.shape;
     n->s_drive = n->target.drive;
+    n->s_mix = n->target.mix;
     n->act_peak = 0.0f;
 }
 
@@ -89,6 +90,7 @@ void nitro_init(nitro_t *n, float sample_rate)
     n->target.res = NITRO_DEFAULT_RES;
     n->target.shape = NITRO_DEFAULT_SHAPE;
     n->target.drive = NITRO_DEFAULT_DRIVE;
+    n->target.mix = NITRO_DEFAULT_MIX;
     n->smooth_coef = 1.0f - expf(-1.0f / (0.005f * n->sr)); /* 5 ms */
     n->env_decay = expf(-1.0f / (0.186f * n->sr));
     nitro_reset(n);
@@ -100,6 +102,7 @@ void nitro_set_params(nitro_t *n, const nitro_params *p)
     n->target.res = clampf(p->res, 0.0f, 1.0f);
     n->target.shape = clampf(p->shape, 0.0f, 1.0f);
     n->target.drive = clampf(p->drive, 0.0f, 1.0f);
+    n->target.mix = clampf(p->mix, 0.0f, 1.0f);
 }
 
 float nitro_take_activity(nitro_t *n)
@@ -153,6 +156,7 @@ void nitro_process(nitro_t *n, float *left, float *right, int frames)
         n->s_res += sm * (n->target.res - n->s_res);
         n->s_shape += sm * (n->target.shape - n->s_shape);
         n->s_drive += sm * (n->target.drive - n->s_drive);
+        n->s_mix += sm * (n->target.mix - n->s_mix);
 
         float fc = nitro_freq_hz(n->s_freq);
         const float fmax = 0.45f * n->sr;
@@ -180,8 +184,11 @@ void nitro_process(nitro_t *n, float *left, float *right, int frames)
             const float fb = MAX_FB * clampf(res * res * (0.8f + 0.2f * d) + 0.2f * res * n->ch[c].env, 0.0f, 1.0f);
             /* Partial make-up for the bass the feedback takes away. */
             const float in_gain = drive_gain * (1.0f + 0.35f * fb);
-            const float out = run_channel(&n->ch[c], buf[c][i], G, fb, in_gain, mix, n->env_decay);
-            buf[c][i] = out;
+            /* MIX blends the untouched input with the filtered signal. The filter always runs, so its state stays
+             * continuous while MIX moves. At MIX 1 this is exactly the wet signal, at MIX 0 exactly the input. */
+            const float dry = buf[c][i];
+            const float wet = run_channel(&n->ch[c], dry, G, fb, in_gain, mix, n->env_decay);
+            buf[c][i] = dry * (1.0f - n->s_mix) + wet * n->s_mix;
             if (n->ch[c].env > n->act_peak)
                 n->act_peak = n->ch[c].env;
         }

@@ -54,6 +54,7 @@ private:
     std::atomic<float>* res_ = nullptr;
     std::atomic<float>* shape_ = nullptr;
     std::atomic<float>* drive_ = nullptr;
+    std::atomic<float>* mix_ = nullptr;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NitroAudioProcessor)
 };

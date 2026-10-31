@@ -97,7 +97,7 @@ static void test_stays_finite_and_bounded(void)
                         }
                         nitro_t n;
                         nitro_init(&n, rates[ri]);
-                        nitro_params prm = {(float)f, (float)re, shape_row(sh), (float)dr};
+                        nitro_params prm = {(float)f, (float)re, shape_row(sh), (float)dr, NITRO_DEFAULT_MIX};
                         run_chunked(&n, &prm, l, r, N, 512);
                         float pk = fmaxf(peak(l, N), peak(r, N));
                         CHECK(isfinite(pk), "non-finite output (sr %.0f f%d r%d s%d d%d)", rates[ri], f, re, sh, dr);
@@ -109,7 +109,7 @@ static void test_stays_finite_and_bounded(void)
 static void test_lowpass_response(void)
 {
     const float sr = 48000.0f, fc = 1000.0f;
-    nitro_params prm = {nitro_freq_to_norm(fc), 0.0f, shape_row(0), 0.0f};
+    nitro_params prm = {nitro_freq_to_norm(fc), 0.0f, shape_row(0), 0.0f, NITRO_DEFAULT_MIX};
     const float amp = 0.05f; /* far below the soft ceiling, so the filter is linear */
     const float hz[] = {100.0f, 500.0f, 1000.0f, 2000.0f, 4000.0f};
     for (int i = 0; i < 5; i++) {
@@ -119,7 +119,7 @@ static void test_lowpass_response(void)
         CHECK(fabsf(g - ref) < 0.6f, "LP 24 gain at %.0f Hz is %.2f dB, expected %.2f", hz[i], g, ref);
     }
     /* each step down in shape row drops one pole: LP 6 attenuates less than LP 24 */
-    nitro_params lp6 = {prm.freq, 0.0f, shape_row(3), 0.0f};
+    nitro_params lp6 = {prm.freq, 0.0f, shape_row(3), 0.0f, NITRO_DEFAULT_MIX};
     float g6 = db(sine_gain(sr, &lp6, 4000.0f, amp));
     float ref6 = db((float)cascade_mag(sr, fc, 4000.0f, 1));
     CHECK(fabsf(g6 - ref6) < 0.6f, "LP 6 gain at 4 kHz is %.2f dB, expected %.2f", g6, ref6);
@@ -129,7 +129,7 @@ static void test_highpass_notch_band(void)
 {
     const float sr = 48000.0f, fc = 1000.0f;
     const float amp = 0.05f;
-    nitro_params hp = {nitro_freq_to_norm(fc), 0.0f, shape_row(11), 0.0f};
+    nitro_params hp = {nitro_freq_to_norm(fc), 0.0f, shape_row(11), 0.0f, NITRO_DEFAULT_MIX};
     float lo = db(sine_gain(sr, &hp, 62.5f, amp)), hi = db(sine_gain(sr, &hp, 8000.0f, amp));
     float mid = db(sine_gain(sr, &hp, fc, amp));
     printf("  HP 24: 62 Hz %.1f dB, 1 kHz %.1f dB, 8 kHz %.1f dB\n", lo, mid, hi);
@@ -137,14 +137,14 @@ static void test_highpass_notch_band(void)
     CHECK(fabsf(hi) < 1.0f, "HP 24 must pass 8 kHz (%.1f dB)", hi);
     CHECK(mid > -14.0f && mid < -10.0f, "HP 24 at the cutoff should be about -12 dB (%.1f)", mid);
 
-    nitro_params notch = {nitro_freq_to_norm(fc), 0.0f, shape_row(6), 0.0f};
+    nitro_params notch = {nitro_freq_to_norm(fc), 0.0f, shape_row(6), 0.0f, NITRO_DEFAULT_MIX};
     float nd = db(sine_gain(sr, &notch, fc, amp));
     float nl = db(sine_gain(sr, &notch, 100.0f, amp)), nh = db(sine_gain(sr, &notch, 10000.0f, amp));
     printf("  NOTCH: 100 Hz %.1f dB, 1 kHz %.1f dB, 10 kHz %.1f dB\n", nl, nd, nh);
     CHECK(nd < -30.0f, "notch must cut the cutoff frequency (%.1f dB)", nd);
     CHECK(fabsf(nl) < 1.0f && fabsf(nh) < 1.0f, "notch must pass both sides (%.1f, %.1f)", nl, nh);
 
-    nitro_params bp = {nitro_freq_to_norm(fc), 0.0f, shape_row(7), 0.0f};
+    nitro_params bp = {nitro_freq_to_norm(fc), 0.0f, shape_row(7), 0.0f, NITRO_DEFAULT_MIX};
     float bc = db(sine_gain(sr, &bp, fc, amp)), bl = db(sine_gain(sr, &bp, 60.0f, amp)),
           bh = db(sine_gain(sr, &bp, 16000.0f, amp));
     printf("  BAND: 60 Hz %.1f dB, 1 kHz %.1f dB, 16 kHz %.1f dB\n", bl, bc, bh);
@@ -159,7 +159,7 @@ static void test_thru_is_transparent(void)
         y[i] = x[i] = 0.7f * frand();
     nitro_t n;
     nitro_init(&n, 44100.0f);
-    nitro_params prm = {0.5f, 0.0f, shape_row(4), 0.0f};
+    nitro_params prm = {0.5f, 0.0f, shape_row(4), 0.0f, NITRO_DEFAULT_MIX};
     run_chunked(&n, &prm, y, NULL, N, 128);
     /* start from the settled state: skip the 5 ms parameter ramp, which begins at the target anyway */
     float worst = 0;
@@ -177,7 +177,7 @@ static void test_step_response(void)
         y[i] = 0.2f;
     nitro_t n;
     nitro_init(&n, 48000.0f);
-    nitro_params prm = {nitro_freq_to_norm(500.0f), 0.0f, shape_row(0), 0.0f};
+    nitro_params prm = {nitro_freq_to_norm(500.0f), 0.0f, shape_row(0), 0.0f, NITRO_DEFAULT_MIX};
     run_chunked(&n, &prm, y, NULL, N, 480);
     float pk = peak(y, N);
     printf("  LP 24 step to 0.2: peak %.5f, final %.5f\n", pk, y[N - 1]);
@@ -189,8 +189,8 @@ static void test_step_response(void)
 static void test_resonance(void)
 {
     const float sr = 48000.0f, fc = 1000.0f;
-    nitro_params off = {nitro_freq_to_norm(fc), 0.0f, shape_row(0), 0.0f};
-    nitro_params on = {nitro_freq_to_norm(fc), 1.0f, shape_row(0), 1.0f};
+    nitro_params off = {nitro_freq_to_norm(fc), 0.0f, shape_row(0), 0.0f, NITRO_DEFAULT_MIX};
+    nitro_params on = {nitro_freq_to_norm(fc), 1.0f, shape_row(0), 1.0f, NITRO_DEFAULT_MIX};
     float g0 = db(sine_gain(sr, &off, fc, 0.02f)), g1 = db(sine_gain(sr, &on, fc, 0.02f));
     printf("  gain at cutoff: RES 0 %.1f dB, RES 1 + DRIVE 1 %.1f dB\n", g0, g1);
     CHECK(g1 > g0 + 12.0f, "RES must raise the gain at the cutoff by more than 12 dB");
@@ -240,8 +240,8 @@ static void test_drive_adds_harmonics(void)
         y0[i] = y1[i] = 0.5f * (float)sin(2.0 * PI * f0 * i / sr);
     nitro_t n;
     nitro_init(&n, sr);
-    nitro_params lo = {1.0f, 0.0f, shape_row(4), 0.0f};
-    nitro_params hi = {1.0f, 0.0f, shape_row(4), 1.0f};
+    nitro_params lo = {1.0f, 0.0f, shape_row(4), 0.0f, NITRO_DEFAULT_MIX};
+    nitro_params hi = {1.0f, 0.0f, shape_row(4), 1.0f, NITRO_DEFAULT_MIX};
     run_chunked(&n, &lo, y0, NULL, N, 256);
     run_chunked(&n, &hi, y1, NULL, N, 256);
     double h3lo = harmonic_db(y0, N, sr, f0, 3), h3hi = harmonic_db(y1, N, sr, f0, 3);
@@ -264,7 +264,7 @@ static void test_level_across_drive(void)
                 y[i] = 0.25f * (float)sin(2.0 * PI * 440.0 * i / sr);
             nitro_t n;
             nitro_init(&n, sr);
-            nitro_params prm = {nitro_freq_to_norm(2000.0f), 0.5f, shape_row(sh), (float)dr};
+            nitro_params prm = {nitro_freq_to_norm(2000.0f), 0.5f, shape_row(sh), (float)dr, NITRO_DEFAULT_MIX};
             run_chunked(&n, &prm, y, NULL, N, 128);
             worst_peak = fmaxf(worst_peak, peak(y, N));
         }
@@ -280,7 +280,7 @@ static void test_param_sweep_no_clicks(void)
         l[i] = 0.4f * sinf(2.0f * 3.14159265f * 220.0f * (float)i / 44100.0f);
     nitro_t n;
     nitro_init(&n, 44100.0f);
-    nitro_params prm = {0.3f, 0.3f, 0.2f, 0.4f};
+    nitro_params prm = {0.3f, 0.3f, 0.2f, 0.4f, NITRO_DEFAULT_MIX};
     nitro_set_params(&n, &prm);
     nitro_reset(&n);
     for (int i = 0; i < N; i += 128) {
@@ -307,7 +307,7 @@ static void test_block_size_and_mono(void)
         a[i] = b[i] = ar[i] = br[i] = m[i] = 0.8f * frand();
     nitro_t n;
     nitro_init(&n, 44100.0f);
-    nitro_params prm = {0.45f, 0.6f, 0.5f, 0.7f};
+    nitro_params prm = {0.45f, 0.6f, 0.5f, 0.7f, NITRO_DEFAULT_MIX};
     run_chunked(&n, &prm, a, ar, N, 1);
     run_chunked(&n, &prm, b, br, N, 777);
     CHECK(memcmp(a, b, sizeof a) == 0 && memcmp(ar, br, sizeof ar) == 0,
@@ -325,7 +325,7 @@ static void test_reset_clears_state(void)
     memset(z, 0, sizeof z);
     nitro_t n;
     nitro_init(&n, 44100.0f);
-    nitro_params prm = {0.5f, 0.9f, 0.1f, 1.0f};
+    nitro_params prm = {0.5f, 0.9f, 0.1f, 1.0f, NITRO_DEFAULT_MIX};
     run_chunked(&n, &prm, x, NULL, N, 256);
     nitro_reset(&n);
     nitro_process(&n, z, NULL, N);
@@ -341,7 +341,7 @@ static void test_no_denormals(void)
         y[i] = i < 4410 ? 0.8f * frand() : 0.0f;
     nitro_t n;
     nitro_init(&n, 44100.0f);
-    nitro_params prm = {0.4f, 0.5f, 0.0f, 0.5f};
+    nitro_params prm = {0.4f, 0.5f, 0.0f, 0.5f, NITRO_DEFAULT_MIX};
     run_chunked(&n, &prm, y, NULL, N, 512);
     int bad = 0;
     for (int i = 0; i < N; i++)
@@ -357,7 +357,7 @@ static void test_activity(void)
     static float l[N], r[N];
     nitro_t n;
     nitro_init(&n, 44100.0f);
-    nitro_params prm = {NITRO_DEFAULT_FREQ, NITRO_DEFAULT_RES, NITRO_DEFAULT_SHAPE, NITRO_DEFAULT_DRIVE};
+    nitro_params prm = {NITRO_DEFAULT_FREQ, NITRO_DEFAULT_RES, NITRO_DEFAULT_SHAPE, NITRO_DEFAULT_DRIVE, NITRO_DEFAULT_MIX};
     nitro_set_params(&n, &prm);
     nitro_reset(&n);
     memset(l, 0, sizeof l);
@@ -384,6 +384,70 @@ static void test_mappings(void)
           nitro_shape_name(NITRO_DEFAULT_SHAPE));
 }
 
+/* MIX: 0 passes the input through untouched, 1 is the filtered signal, and the middle is their linear blend. */
+static void test_mix(void)
+{
+    enum { N = 8192 };
+    static float dry[N], wet[N], x0[N], x5[N], x1[N], r0[N];
+    for (int i = 0; i < N; i++)
+        dry[i] = 0.4f * frand();
+    nitro_params prm = {nitro_freq_to_norm(800.0f), 0.4f, shape_row(0), 0.6f, 1.0f};
+    nitro_t n;
+    nitro_init(&n, 44100.0f);
+
+    memcpy(wet, dry, sizeof wet);
+    run_chunked(&n, &prm, wet, NULL, N, 64);
+
+    prm.mix = 0.0f;
+    memcpy(x0, dry, sizeof x0);
+    run_chunked(&n, &prm, x0, NULL, N, 64);
+    CHECK(memcmp(x0, dry, sizeof x0) == 0, "mix 0 is not a bit-exact bypass");
+
+    prm.mix = 1.0f;
+    memcpy(x1, dry, sizeof x1);
+    run_chunked(&n, &prm, x1, NULL, N, 64);
+    CHECK(memcmp(x1, wet, sizeof x1) == 0, "mix 1 differs from the fully wet signal");
+
+    prm.mix = 0.5f;
+    memcpy(x5, dry, sizeof x5);
+    run_chunked(&n, &prm, x5, NULL, N, 64);
+    float worst = 0.0f;
+    for (int i = 0; i < N; i++)
+        worst = fmaxf(worst, fabsf(x5[i] - 0.5f * (dry[i] + wet[i])));
+    CHECK(worst < 1e-5f, "mix 0.5 is not the average of dry and wet (worst error %g)", (double)worst);
+
+    /* The filter keeps running at mix 0, so jumping to mix 1 mid-stream lands on the same wet signal. */
+    prm.mix = 0.0f;
+    nitro_set_params(&n, &prm);
+    nitro_reset(&n);
+    memcpy(r0, dry, sizeof r0);
+    nitro_process(&n, r0, NULL, N / 2);
+    prm.mix = 1.0f;
+    nitro_set_params(&n, &prm);
+    nitro_process(&n, r0 + N / 2, NULL, N / 2);
+    float tail = 0.0f;
+    for (int i = N / 2 + 3500; i < N; i++) /* past the 5 ms mix smoothing */
+        tail = fmaxf(tail, fabsf(r0[i] - wet[i]));
+    CHECK(tail < 1e-5f, "filter state drifted while mix was 0 (%g)", (double)tail);
+
+    /* A mix sweep must not click: no sample-to-sample step bigger than the input itself can produce. */
+    memcpy(r0, dry, sizeof r0);
+    nitro_set_params(&n, &prm);
+    nitro_reset(&n);
+    float maxstep = 0.0f, prev = 0.0f;
+    for (int b = 0; b < N / 64; b++) {
+        prm.mix = (b & 1) ? 1.0f : 0.0f;
+        nitro_set_params(&n, &prm);
+        nitro_process(&n, r0 + b * 64, NULL, 64);
+        for (int i = 0; i < 64; i++) {
+            maxstep = fmaxf(maxstep, fabsf(r0[b * 64 + i] - prev));
+            prev = r0[b * 64 + i];
+        }
+    }
+    CHECK(maxstep < 1.0f, "mix toggling clicks (step %g)", (double)maxstep);
+    CHECK(peak(r0, N) < 1.5f, "mix toggling overshoots (%g)", (double)peak(r0, N));
+}
+
 int main(void)
 {
     test_stays_finite_and_bounded();
@@ -400,6 +464,7 @@ int main(void)
     test_no_denormals();
     test_activity();
     test_mappings();
+    test_mix();
     if (failures) {
         printf("%d FAILED\n", failures);
         return 1;

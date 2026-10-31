@@ -25,6 +25,7 @@ static void *eng_create(const char *data_dir)
     p->params.res = NITRO_DEFAULT_RES;
     p->params.shape = NITRO_DEFAULT_SHAPE;
     p->params.drive = NITRO_DEFAULT_DRIVE;
+    p->params.mix = NITRO_DEFAULT_MIX;
     nitro_set_params(&p->core, &p->params);
     nitro_reset(&p->core);
     return p;
@@ -54,6 +55,8 @@ static void eng_set_param(void *inst, const char *key, const char *val)
         p->params.shape = v;
     else if (!strcmp(key, "drive"))
         p->params.drive = v;
+    else if (!strcmp(key, "mix"))
+        p->params.mix = v;
     else
         return;
     nitro_set_params(&p->core, &p->params);
@@ -70,6 +73,8 @@ static int eng_get_param(void *inst, const char *key, char *buf, int buf_len)
         return snprintf(buf, (size_t)buf_len, "%g", (double)p->params.shape);
     if (!strcmp(key, "drive"))
         return snprintf(buf, (size_t)buf_len, "%g", (double)p->params.drive);
+    if (!strcmp(key, "mix"))
+        return snprintf(buf, (size_t)buf_len, "%g", (double)p->params.mix);
     /* readable value text for the MPC screen (vst.json marks these params dynamic_display) */
     if (!strcmp(key, "freq_display")) {
         const float hz = nitro_freq_hz(p->params.freq);
@@ -82,6 +87,8 @@ static int eng_get_param(void *inst, const char *key, char *buf, int buf_len)
         return snprintf(buf, (size_t)buf_len, "%s", nitro_shape_name(p->params.shape));
     if (!strcmp(key, "drive_display"))
         return snprintf(buf, (size_t)buf_len, "%d", (int)(p->params.drive * 100.0f + 0.5f));
+    if (!strcmp(key, "mix_display"))
+        return snprintf(buf, (size_t)buf_len, "%d", (int)(p->params.mix * 100.0f + 0.5f));
     return 0;
 }
 

@@ -22,6 +22,7 @@ typedef struct {
     float res;
     float shape;
     float drive;
+    float mix;   /* wet/dry: 0 = dry input only, 1 = fully filtered (the OP-1 behaviour) */
 } nitro_params;
 
 /* OP-1 factory default (raw knob values 500, 0, 10500, 16000 out of 32767).
@@ -32,6 +33,8 @@ typedef struct {
 #define NITRO_DEFAULT_RES 0.0f
 #define NITRO_DEFAULT_SHAPE 0.46609f
 #define NITRO_DEFAULT_DRIVE 0.48831f
+/* The OP-1 has no mix control, so the default is fully wet and leaves the original sound untouched. */
+#define NITRO_DEFAULT_MIX 1.0f
 
 typedef struct {
     float s[4];  /* trapezoidal one-pole states of the four stages */
@@ -41,7 +44,7 @@ typedef struct {
 typedef struct {
     float sr;
     nitro_params target;
-    float s_freq, s_res, s_shape, s_drive; /* smoothed controls */
+    float s_freq, s_res, s_shape, s_drive, s_mix; /* smoothed controls */
     float smooth_coef;
     float env_decay;   /* per-sample decay of the peak follower */
     float act_peak;    /* strongest follower value since the last nitro_take_activity() */

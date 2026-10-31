@@ -6,6 +6,7 @@ Animated elements (all RGBA filmstrips, vertical stacks of frames, transparent e
   res.png    33 frames  green ten-bar stack, bars light up with RES
   shape.png  33 frames  white filter response curve, morphs LP 24 -> THRU -> HP 24 (SHAPE)
   drive.png  33 frames  red ten-bar stack, bars light up with DRIVE
+  mix.png    33 frames  twelve lilac ticks fill from the left, dry to wet (MIX), dim slots always drawn
   act.png    64 frames  valve glow, frame = freq step * 8 + level step (written by the engine)
   mist.png   64 frames  violet mist at the bottle foot, same frame number as act
 Colours come from design/BRIEF.md. Drawn in my own style, nothing is copied from the OP-1 art.
@@ -231,6 +232,21 @@ def mist_frame(ks, ls, W=560, H=190):
     return Image.fromarray(arr, "RGBA")
 
 
+def mix_frame(t, W=120, H=22, n=12, pitch=10, tw=6, th=14):
+    img = canvas(W, H)
+    d = ImageDraw.Draw(img)
+    c = t * n
+    for k in range(n):
+        x = 5 + k * pitch
+        y = (H - th) / 2
+        box = [x * SS, y * SS, (x + tw) * SS, (y + th) * SS]
+        d.rectangle(box, outline=rgba(LILAC, 0.28), width=SS)
+        a = clamp(c - k)
+        if a > 0:
+            d.rectangle(box, fill=rgba(LILAC, 0.27 + 0.73 * a))
+    return finish(img, W, H)
+
+
 def main():
     os.makedirs(OUT, exist_ok=True)
     n = 33
@@ -238,6 +254,7 @@ def main():
     stack([bars_frame(i / (n - 1), MINT) for i in range(n)], "res.png")
     stack([bars_frame(i / (n - 1), RED, taper=True) for i in range(n)], "drive.png")
     stack([shape_frame(i / (n - 1)) for i in range(n)], "shape.png")
+    stack([mix_frame(i / (n - 1)) for i in range(n)], "mix.png")
     stack([act_frame(f // 8, f % 8) for f in range(64)], "act.png")
     stack([mist_frame(f // 8, f % 8) for f in range(64)], "mist.png")
 

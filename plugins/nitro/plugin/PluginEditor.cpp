@@ -96,12 +96,13 @@ NitroAudioProcessorEditor::NitroAudioProcessorEditor(NitroAudioProcessor& p)
       shape_("SHAPE", "LOW PASS TO HIGH PASS", kLilac, 44.0f,
              [](double v) { return juce::String(nitro_shape_name(static_cast<float>(v))); }),
       drive_("DRIVE", "GAIN INTO THE FILTER", kRed, 76.0f,
-             [](double v) { return juce::String(juce::roundToInt(v * 100.0)); })
+             [](double v) { return juce::String(juce::roundToInt(v * 100.0)); }),
+      mix_("MIX", "DRY TO WET", kLilac, 76.0f, [](double v) { return juce::String(juce::roundToInt(v * 100.0)); })
 {
     background_ = juce::ImageCache::getFromMemory(BinaryData::faceplatebg1280x630_png,
                                                   BinaryData::faceplatebg1280x630_pngSize);
 
-    for (auto* k : {&freq_, &res_, &shape_, &drive_})
+    for (auto* k : {&freq_, &res_, &shape_, &drive_, &mix_})
     {
         k->setRange(0.0, 1.0);
         addAndMakeVisible(*k);
@@ -111,11 +112,13 @@ NitroAudioProcessorEditor::NitroAudioProcessorEditor(NitroAudioProcessor& p)
     res_.setDoubleClickReturnValue(true, NITRO_DEFAULT_RES);
     shape_.setDoubleClickReturnValue(true, NITRO_DEFAULT_SHAPE);
     drive_.setDoubleClickReturnValue(true, NITRO_DEFAULT_DRIVE);
+    mix_.setDoubleClickReturnValue(true, NITRO_DEFAULT_MIX);
 
     freqA_ = std::make_unique<Attachment>(processor_.apvts, "freq", freq_);
     resA_ = std::make_unique<Attachment>(processor_.apvts, "res", res_);
     shapeA_ = std::make_unique<Attachment>(processor_.apvts, "shape", shape_);
     driveA_ = std::make_unique<Attachment>(processor_.apvts, "drive", drive_);
+    mixA_ = std::make_unique<Attachment>(processor_.apvts, "mix", mix_);
 
     constrainer_.setFixedAspectRatio(static_cast<double>(kDesignW / kDesignH));
     constrainer_.setSizeLimits(640, 315, 1920, 945);
@@ -203,4 +206,6 @@ void NitroAudioProcessorEditor::resized()
     place(res_, 60.0f, 370.0f);
     place(shape_, 980.0f, 110.0f);
     place(drive_, 980.0f, 370.0f);
+    // MIX is a small secondary knob in the top right corner, above SHAPE: 0.42 scale, centred on (1100, 58) in design space.
+    mix_.setBounds(juce::Rectangle<float>(1050.0f * s, 5.0f * s, kKnobW * 0.42f * s, kKnobH * 0.42f * s).toNearestInt());
 }
