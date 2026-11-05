@@ -1,5 +1,6 @@
 #include "PluginEditor.h"
 #include "BinaryData.h"
+#include "op1fx_files.h"
 
 namespace
 {
@@ -322,8 +323,9 @@ void SamplerAudioProcessorEditor::showSampleMenu()
                         safe->chooser_ = std::make_unique<juce::FileChooser>("Choose a sample", juce::File(), "*.wav;*.aif;*.aiff");
                         safe->chooser_->launchAsync(juce::FileBrowserComponent::openMode | juce::FileBrowserComponent::canSelectFiles,
                                                     [safe](const juce::FileChooser& fc) {
-                                                        if (safe != nullptr && fc.getResult().existsAsFile())
-                                                            safe->loadFile(fc.getResult());
+                                                        const auto files = op1fxChosenFiles(fc);
+                                                        if (safe != nullptr && !files.isEmpty() && files[0].existsAsFile())
+                                                            safe->loadFile(files[0]);
                                                     });
                     });
 }
