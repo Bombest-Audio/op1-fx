@@ -69,7 +69,9 @@ jobs:
           ref: 81526f870985cce96050ee92b7ed5c7b264ce972
           path: mpc-vst-plugins
       - name: Set up QEMU for the arm containers
-        uses: docker/setup-qemu-action@v3
+        uses: docker/setup-qemu-action@c7c53464625b32c7a7e944ae62b3e17d2b600130 # v3.7.0
+        with:
+          platforms: arm,arm64
       - name: Build MPC VST2 (armv7 and aarch64), every plugin
         shell: bash
         run: |
