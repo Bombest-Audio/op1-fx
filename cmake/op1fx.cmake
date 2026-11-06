@@ -11,11 +11,16 @@ function(op1fx_add_plugin)
     cmake_parse_arguments(P "SYNTH" "NAME;ID;CODE;VST3_CATEGORIES" "CLAP_FEATURES" ${ARGN})
     set(dir ${CMAKE_CURRENT_SOURCE_DIR})
 
-    set(formats VST3 Standalone)
-    if(APPLE)
-        list(APPEND formats AU)
+    if(IOS)
+        # AUv3 ships inside the Standalone app, which is its container on iOS.
+        set(formats AUv3 Standalone)
+    else()
+        set(formats VST3 Standalone)
+        if(APPLE)
+            list(APPEND formats AU)
+        endif()
     endif()
-    if(OP1FX_AAX)
+    if(OP1FX_AAX AND NOT IOS)
         list(APPEND formats AAX)
     endif()
     if(P_SYNTH)
@@ -50,11 +55,16 @@ function(op1fx_add_plugin)
         COPY_PLUGIN_AFTER_BUILD FALSE
         BUNDLE_ID audio.bombest.${P_ID}
         MICROPHONE_PERMISSION_ENABLED TRUE
-        MICROPHONE_PERMISSION_TEXT "${P_NAME} needs microphone access to process audio input in the standalone app.")
+        MICROPHONE_PERMISSION_TEXT "${P_NAME} needs microphone access to process audio input in the standalone app."
+        IPHONE_SCREEN_ORIENTATIONS UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight
+        IPAD_SCREEN_ORIENTATIONS UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight
+        REQUIRES_FULL_SCREEN FALSE)
 
-    clap_juce_extensions_plugin(TARGET ${P_NAME}
-        CLAP_ID "audio.bombest.${P_ID}"
-        CLAP_FEATURES ${P_CLAP_FEATURES})
+    if(NOT IOS)
+        clap_juce_extensions_plugin(TARGET ${P_NAME}
+            CLAP_ID "audio.bombest.${P_ID}"
+            CLAP_FEATURES ${P_CLAP_FEATURES})
+    endif()
 
     set(preset_define "")
     set(asset_sources ${dir}/design/art/faceplate-bg-1280x630.png)

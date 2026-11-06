@@ -29,6 +29,7 @@ jobs:
       matrix:
         os: [macos-14, windows-latest]
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
       - name: Configure
@@ -68,6 +69,11 @@ jobs:
           # Pinned to a commit so upstream changes cannot alter the build.
           ref: 81526f870985cce96050ee92b7ed5c7b264ce972
           path: mpc-vst-plugins
+      - name: Set up QEMU for the arm containers
+        uses: docker/setup-qemu-action@c7c53464625b32c7a7e944ae62b3e17d2b600130 # v3.7.0
+        with:
+          image: tonistiigi/binfmt@sha256:400a4873b838d1b89194d982c45e5fb3cda4593fbfd7e08a02e76b03b21166f0
+          platforms: arm,arm64
       - name: Build MPC VST2 (armv7 and aarch64), every plugin
         shell: bash
         run: |

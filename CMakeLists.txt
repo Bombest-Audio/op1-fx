@@ -1,7 +1,11 @@
 cmake_minimum_required(VERSION 3.22)
 
 # Must be set before project() so the toolchain picks it up.
-if(APPLE)
+# iOS (AUv3 for Logic Pro for iPad): configure with -G Xcode -DCMAKE_SYSTEM_NAME=iOS, see docs/IOS.md.
+if(CMAKE_SYSTEM_NAME STREQUAL "iOS")
+    set(CMAKE_OSX_DEPLOYMENT_TARGET "16.0" CACHE STRING "Minimum iOS version" FORCE)
+    set(CMAKE_OSX_ARCHITECTURES "arm64" CACHE STRING "Device architecture" FORCE)
+elseif(APPLE)
     set(CMAKE_OSX_DEPLOYMENT_TARGET "11.0" CACHE STRING "Minimum macOS version" FORCE)
     set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64" CACHE STRING "Universal binary" FORCE)
 endif()
