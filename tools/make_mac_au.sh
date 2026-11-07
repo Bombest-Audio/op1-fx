@@ -77,7 +77,7 @@ OP1 plugins $VERSION, Audio Units for Logic Pro (macOS 11.0+, Apple Silicon and 
 
 Install: open Terminal, drag install.sh into it, press Return.
 Or copy everything in Components/ to ~/Library/Audio/Plug-Ins/Components yourself.
-Presets are grouped in folders (Vocals, Drums, Bass and Keys, FX) in the plugin's preset menu.
+Presets are grouped in folders (01 Vocals, 02 Drums, 03 Bass and Keys, 04 FX) in the plugin's preset menu.
 Effects show up under Audio Units > Bombest, instruments under the instrument slot > AU Instruments > Bombest.
 
 GPL-3.0-only. Not affiliated with or endorsed by Teenage Engineering.

@@ -10,16 +10,16 @@ let outRoot = URL(fileURLWithPath: CommandLine.arguments.count > 1 ? CommandLine
 
 // First match wins. "Init" stays at the top level of the plugin folder.
 let groups: [(folder: String, words: [String])] = [
-    ("Vocals", ["vocal", "lead", "ballad", "ad-lib", "adlib", "throw", "word"]),
-    ("Drums", ["drum", "kick", "snare", "hat", "slam", "delay rtn"]),
-    ("Bass and Keys", ["808", "keys", "bass", "pad", "chorus"]),
+    ("01 Vocals", ["vocal", "lead", "ballad", "ad-lib", "adlib", "throw", "word"]),
+    ("02 Drums", ["drum", "kick", "snare", "hat", "slam", "delay rtn"]),
+    ("03 Bass and Keys", ["808", "keys", "bass", "pad", "chorus"]),
 ]
 
 func folder(for name: String) -> String? {
     let n = name.lowercased()
     if n == "init" { return nil }
     for g in groups where g.words.contains(where: { n.contains($0) }) { return g.folder }
-    return "FX"
+    return "04 FX"
 }
 
 func fourCC(_ s: String) -> UInt32 { s.utf8.reduce(0) { ($0 << 8) | UInt32($1) } }
