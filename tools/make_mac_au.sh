@@ -4,6 +4,8 @@
 # Needs the AUs built first (cmake --build build/all), the Developer ID Application identity in the login keychain and a
 # notarytool keychain profile (OP1_NOTARY_PROFILE, default notarytool). AU bundles get the plain Developer ID recipe:
 # no Hardened Runtime, no entitlements, since macOS drops entitlements from MH_BUNDLE binaries anyway.
+# The factory presets ship as grouped .aupreset files (tools/make_aupresets.swift), read from the AUs installed on this
+# Mac, so run install.sh from a fresh build before packaging.
 # There is no Developer ID Installer identity on this machine, so this ships a zip with an install.sh, not a .pkg.
 set -euo pipefail
 VERSION="${1:?usage: tools/make_mac_au.sh <version> [build dir]}"
@@ -45,9 +47,14 @@ for c in "$STAGE/$TOP/Components"/*.component; do
     spctl --assess --type install "$c"
 done
 
+# .aupreset files give Logic folders in its preset menu; the AU factory list is flat.
+swiftc -O "$FX/tools/make_aupresets.swift" -o "$STAGE/make_aupresets"
+"$STAGE/make_aupresets" "$STAGE/$TOP/Presets"
+[ -n "$(find "$STAGE/$TOP/Presets" -name '*.aupreset' -print -quit)" ] || { echo "no presets written; install the AUs first" >&2; exit 1; }
+
 cat > "$STAGE/$TOP/install.sh" <<'EOF'
 #!/bin/sh
-# Copies the AUs into your user Components folder and makes Logic rescan them on next launch.
+# Copies the AUs and their grouped presets into your user Library and makes Logic rescan them on next launch.
 set -e
 here="$(cd "$(dirname "$0")" && pwd)"
 dest="$HOME/Library/Audio/Plug-Ins/Components"
@@ -57,6 +64,9 @@ for c in "$here"/Components/*.component; do
     ditto "$c" "$dest/$(basename "$c")"
     echo "installed $(basename "$c")"
 done
+mkdir -p "$HOME/Library/Audio/Presets"
+ditto "$here/Presets/Bombest" "$HOME/Library/Audio/Presets/Bombest"
+echo "installed presets"
 rm -rf "$HOME/Library/Caches/com.apple.audio.AudioUnitCache"
 killall -9 AudioComponentRegistrar 2>/dev/null || true
 echo "Done. Quit and reopen Logic Pro to see the plugins."
@@ -67,6 +77,7 @@ OP1 plugins $VERSION, Audio Units for Logic Pro (macOS 11.0+, Apple Silicon and 
 
 Install: open Terminal, drag install.sh into it, press Return.
 Or copy everything in Components/ to ~/Library/Audio/Plug-Ins/Components yourself.
+Presets are grouped in folders (Vocals, Drums, Bass and Keys, FX) in the plugin's preset menu.
 Effects show up under Audio Units > Bombest, instruments under the instrument slot > AU Instruments > Bombest.
 
 GPL-3.0-only. Not affiliated with or endorsed by Teenage Engineering.
