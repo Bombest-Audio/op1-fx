@@ -47,10 +47,28 @@ for c in "$STAGE/$TOP/Components"/*.component; do
     spctl --assess --type install "$c"
 done
 
-# .aupreset files give Logic folders in its preset menu; the AU factory list is flat.
+# .aupreset files give Logic folders in its preset menu; the AU factory list is flat. The generator reads the AUs that are
+# registered on this Mac, not the staged copies, so the output is checked against the source presets.json files: a stale or
+# missing install changes the counts and fails the package.
 swiftc -O "$FX/tools/make_aupresets.swift" -o "$STAGE/make_aupresets"
 "$STAGE/make_aupresets" "$STAGE/$TOP/Presets"
-[ -n "$(find "$STAGE/$TOP/Presets" -name '*.aupreset' -print -quit)" ] || { echo "no presets written; install the AUs first" >&2; exit 1; }
+want_plugins=0
+want_presets=0
+for j in "$FX"/plugins/*/mpc/presets.json; do
+    n="$(python3 -c 'import json,sys; print(len(json.load(open(sys.argv[1]))["presets"]))' "$j")"
+    if [ "$n" -gt 1 ]; then
+        want_plugins=$((want_plugins + 1))
+        want_presets=$((want_presets + n))
+    fi
+done
+got_plugins="$(find "$STAGE/$TOP/Presets/Bombest" -mindepth 1 -maxdepth 1 -type d | wc -l | tr -d ' ')"
+got_presets="$(find "$STAGE/$TOP/Presets" -name '*.aupreset' | wc -l | tr -d ' ')"
+if [ "$got_plugins" != "$want_plugins" ] || [ "$got_presets" != "$want_presets" ]; then
+    echo "presets do not match the source: $got_plugins plugins / $got_presets presets, expected $want_plugins / $want_presets; reinstall the AUs from this build" >&2
+    exit 1
+fi
+# Manifest of the factory files in this release; install.sh uses it to retire files a later release drops or renames.
+(cd "$STAGE/$TOP/Presets/Bombest" && find . -name '*.aupreset' | sort) > "$STAGE/$TOP/Presets/manifest.txt"
 
 cat > "$STAGE/$TOP/install.sh" <<'EOF'
 #!/bin/sh
@@ -64,8 +82,18 @@ for c in "$here"/Components/*.component; do
     ditto "$c" "$dest/$(basename "$c")"
     echo "installed $(basename "$c")"
 done
-mkdir -p "$HOME/Library/Audio/Presets"
-ditto "$here/Presets/Bombest" "$HOME/Library/Audio/Presets/Bombest"
+presets="$HOME/Library/Audio/Presets/Bombest"
+mkdir -p "$presets"
+# Remove only the factory files an earlier release installed (listed in its manifest), so presets you saved stay.
+if [ -f "$presets/.op1-suite-manifest" ]; then
+    while IFS= read -r f; do
+        rm -f "$presets/$f"
+    done < "$presets/.op1-suite-manifest"
+    find "$presets" -type d -empty -delete 2>/dev/null || true
+    mkdir -p "$presets"
+fi
+ditto "$here/Presets/Bombest" "$presets"
+cp "$here/Presets/manifest.txt" "$presets/.op1-suite-manifest"
 echo "installed presets"
 rm -rf "$HOME/Library/Caches/com.apple.audio.AudioUnitCache"
 killall -9 AudioComponentRegistrar 2>/dev/null || true
