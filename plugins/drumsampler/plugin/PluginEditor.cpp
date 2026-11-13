@@ -1,5 +1,6 @@
 #include "PluginEditor.h"
 #include "BinaryData.h"
+#include "op1fx_files.h"
 
 namespace
 {
@@ -537,7 +538,7 @@ void DrumSamplerAudioProcessorEditor::chooseFile(int slot)
     chooser_->launchAsync(flags, [self, slot](const juce::FileChooser& fc) {
         if (self == nullptr)
             return;
-        const auto results = fc.getResults();
+        const auto results = op1fxChosenFiles(fc);
         for (int i = 0; i < results.size(); ++i)
         {
             if (i == 0)
