@@ -47,9 +47,22 @@ for c in "$STAGE/$TOP/Components"/*.component; do
     spctl --assess --type install "$c"
 done
 
-# .aupreset files give Logic folders in its preset menu; the AU factory list is flat. The generator reads the AUs that are
-# registered on this Mac, not the staged copies, so the output is checked against the source presets.json files: a stale or
-# missing install changes the counts and fails the package.
+# .aupreset files give Logic folders in its preset menu; the AU factory list is flat. The generator reads the AUs registered
+# on this Mac, so first install the exact build artifacts here and check every installed binary is byte-identical to the
+# build. Then the presets come from the build being packaged, not from whatever suite was installed before.
+user_components="$HOME/Library/Audio/Plug-Ins/Components"
+mkdir -p "$user_components"
+for c in "$BUILD"/plugins/*/*_artefacts/Release/AU/*.component; do
+    name="$(basename "$c" .component)"
+    rm -rf "$user_components/$name.component"
+    ditto "$c" "$user_components/$name.component"
+    cmp -s "$c/Contents/MacOS/$name" "$user_components/$name.component/Contents/MacOS/$name" \
+        || { echo "installed $name differs from the build" >&2; exit 1; }
+done
+rm -rf "$HOME/Library/Caches/com.apple.audio.AudioUnitCache"
+killall -9 AudioComponentRegistrar 2>/dev/null || true
+sleep 2
+# Preset counts are checked against the source presets.json files as a second guard.
 swiftc -O "$FX/tools/make_aupresets.swift" -o "$STAGE/make_aupresets"
 "$STAGE/make_aupresets" "$STAGE/$TOP/Presets"
 want_plugins=0
@@ -67,33 +80,63 @@ if [ "$got_plugins" != "$want_plugins" ] || [ "$got_presets" != "$want_presets" 
     echo "presets do not match the source: $got_plugins plugins / $got_presets presets, expected $want_plugins / $want_presets; reinstall the AUs from this build" >&2
     exit 1
 fi
-# Manifest of the factory files in this release; install.sh uses it to retire files a later release drops or renames.
-(cd "$STAGE/$TOP/Presets/Bombest" && find . -name '*.aupreset' | sort) > "$STAGE/$TOP/Presets/manifest.txt"
+# Manifest of the factory files in this release: "sha256  path". install.sh uses it to retire files a later release drops
+# or renames, and to leave alone any file you edited.
+(cd "$STAGE/$TOP/Presets/Bombest" && find . -name '*.aupreset' | sort | while IFS= read -r f; do shasum -a 256 "$f"; done) \
+    > "$STAGE/$TOP/Presets/manifest.txt"
 
 cat > "$STAGE/$TOP/install.sh" <<'EOF'
 #!/bin/sh
 # Copies the AUs and their grouped presets into your user Library and makes Logic rescan them on next launch.
+# Each plugin is copied and verified next to the installed one, then swapped in, so a failed copy never leaves a plugin
+# missing. Presets you saved or edited are kept.
 set -e
 here="$(cd "$(dirname "$0")" && pwd)"
 dest="$HOME/Library/Audio/Plug-Ins/Components"
 mkdir -p "$dest"
 for c in "$here"/Components/*.component; do
-    rm -rf "$dest/$(basename "$c")"
-    ditto "$c" "$dest/$(basename "$c")"
-    echo "installed $(basename "$c")"
+    name="$(basename "$c")"
+    new="$dest/.$name.new"
+    old="$dest/.$name.old"
+    rm -rf "$new" "$old"
+    ditto "$c" "$new"
+    codesign --verify --deep --strict "$new" || { rm -rf "$new"; echo "$name failed signature verification, not installed" >&2; exit 1; }
+    if [ -e "$dest/$name" ]; then mv "$dest/$name" "$old"; fi
+    if mv "$new" "$dest/$name"; then
+        rm -rf "$old"
+    else
+        rm -rf "$dest/$name"
+        if [ -e "$old" ]; then mv "$old" "$dest/$name"; fi
+        echo "could not install $name, kept the previous copy" >&2
+        exit 1
+    fi
+    echo "installed $name"
 done
+
 presets="$HOME/Library/Audio/Presets/Bombest"
+manifest="$presets/.op1-suite-manifest"
+stamp="$(date +%Y%m%d-%H%M%S)"
 mkdir -p "$presets"
-# Remove only the factory files an earlier release installed (listed in its manifest), so presets you saved stay.
-if [ -f "$presets/.op1-suite-manifest" ]; then
-    while IFS= read -r f; do
-        rm -f "$presets/$f"
-    done < "$presets/.op1-suite-manifest"
+hash() { shasum -a 256 "$1" | cut -d' ' -f1; }
+# Retire factory files from the previous release only if they are still byte-identical to what it shipped.
+if [ -f "$manifest" ]; then
+    while read -r sum f; do
+        [ -f "$presets/$f" ] && [ "$(hash "$presets/$f")" = "$sum" ] && rm -f "$presets/$f"
+    done < "$manifest"
     find "$presets" -type d -empty -delete 2>/dev/null || true
     mkdir -p "$presets"
 fi
-ditto "$here/Presets/Bombest" "$presets"
-cp "$here/Presets/manifest.txt" "$presets/.op1-suite-manifest"
+# Copy this release's presets. A different file already at the same path is yours: move it aside, never overwrite it.
+while read -r sum f; do
+    target="$presets/$f"
+    if [ -f "$target" ] && [ "$(hash "$target")" != "$sum" ]; then
+        mv "$target" "$target.user-backup-$stamp"
+        echo "kept your $f as $(basename "$target").user-backup-$stamp"
+    fi
+    mkdir -p "$(dirname "$target")"
+    cp "$here/Presets/Bombest/$f" "$target"
+done < "$here/Presets/manifest.txt"
+cp "$here/Presets/manifest.txt" "$manifest"
 echo "installed presets"
 rm -rf "$HOME/Library/Caches/com.apple.audio.AudioUnitCache"
 killall -9 AudioComponentRegistrar 2>/dev/null || true
