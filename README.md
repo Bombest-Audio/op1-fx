@@ -41,8 +41,8 @@ The Gen1 builds have not been tested on hardware yet. If one misbehaves, open an
     cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
     cmake --build build
 
-Core tests for a plugin: `plugins/<name>/core/tests/run.sh`. The MPC builds and the suite zips (`tools/make_suite.sh <version>`) are covered in `docs/` and
-`tools/make_suite.sh`.
+Core tests for a plugin: `plugins/<name>/core/tests/run.sh`. The MPC builds are covered in `docs/`. The suite
+zips come from `tools/make_suite.sh <version>`.
 
 ## License
 
