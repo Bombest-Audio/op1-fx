@@ -18,7 +18,8 @@ endorsed by Teenage Engineering. "OP-1" is their trademark; I use it only to say
 
 ## Install on an MPC
 
-Download the suite zip for your MPC from the latest release:
+Both suites need MPC OS 3.x. The skins use features MPC OS 2.x can't read. Download the suite zip for your MPC from
+the latest release:
 
 | MPC | Download |
 |---|---|
@@ -40,7 +41,7 @@ The Gen1 builds have not been tested on hardware yet. If one misbehaves, open an
     cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
     cmake --build build
 
-Core tests for a plugin: `plugins/<name>/core/tests/run.sh`. The MPC builds and the suite zip are covered in `docs/` and
+Core tests for a plugin: `plugins/<name>/core/tests/run.sh`. The MPC builds and the suite zips (`tools/make_suite.sh <version>`) are covered in `docs/` and
 `tools/make_suite.sh`.
 
 ## License
