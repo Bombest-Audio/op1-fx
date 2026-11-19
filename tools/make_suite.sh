@@ -196,7 +196,8 @@ mpc_ctl() {   # a test run logs the call to $MPC_TEST_LOG instead of touching MP
 # stop_mpc <cleanup>: stops MPC; on any exit, Ctrl-C or a dropped SSH session, runs <cleanup> and starts MPC again
 stop_mpc() {
     trap "$1; mpc_ctl start" EXIT
-    trap 'exit 130' INT HUP TERM   # some shells skip the EXIT trap on a signal; exiting from here runs it
+    trap 'exit 130' INT HUP TERM   # some shells skip the EXIT trap on a signal; exiting from here runs it (the plugin
+                                   # loop replaces this with a trap that finishes the plugin in progress first)
     mpc_ctl stop
     if [ -z "${MPC_INSTALL_TEST:-}" ]; then
         i=0; while pidof MPC >/dev/null && [ $i -lt 30 ]; do sleep 1; i=$((i + 1)); done
@@ -223,10 +224,15 @@ if [ $YES = 0 ]; then
 fi
 LOG=$(mktemp) || die "cannot create a temp file"
 stop_mpc 'rm -f "$LOG"'
-OK=0; FAIL=""; WARN=""
+OK=0; FAIL=""; WARN=""; STOP=""
+# a signal from here on waits for the plugin in progress: install.sh cut off between its folder swap and its MPC.settings
+# write would leave the two out of step. The plugin's install runs with the signals ignored (inherited through exec),
+# this loop notes the signal and stops after that plugin, and the EXIT trap starts MPC.
+trap 'STOP=1' INT HUP TERM
 for p in packages/*/; do
+    [ -z "$STOP" ] || break
     n=$(basename "$p")
-    if (cd "$p" && sh install.sh -y -n -t "$SYNTHS" >"$LOG" 2>&1); then
+    if (trap '' INT HUP TERM; cd "$p" && sh install.sh -y -n -t "$SYNTHS" >"$LOG" 2>&1); then
         OK=$((OK + 1)); echo "  ok   $n"
         # the same warning (noexec drive, Synths folder not in MPC's content locations) comes from every plugin: show it once
         w=$(grep '^warning:' "$LOG" || true)
@@ -236,6 +242,7 @@ for p in packages/*/; do
     fi
 done
 echo "$OK of $N installed."
+[ -z "$STOP" ] || { echo "interrupted: stopped after the plugin in progress, the rest are not installed" >&2; exit 130; }
 [ -z "$FAIL" ] || { echo "failed:$FAIL" >&2; exit 1; }
 echo "Starting MPC. Add the plugins from the plugin browser."
 EOF
@@ -253,14 +260,17 @@ if [ $YES = 0 ]; then
     read -r ok; case "$ok" in y|Y|yes) ;; *) echo "cancelled"; exit 1 ;; esac
 fi
 stop_mpc :
-FAIL=""
+FAIL=""; STOP=""
+trap 'STOP=1' INT HUP TERM   # as in install-all.sh: a signal waits for the plugin in progress, then stops
 for p in packages/*/; do
+    [ -z "$STOP" ] || break
     n=$(basename "$p")
     if [ -f "$p/uninstall.sh" ]; then
-        if (cd "$p" && sh uninstall.sh -y -n -t "$SYNTHS" >/dev/null 2>&1); then echo "  removed $n"
+        if (trap '' INT HUP TERM; cd "$p" && sh uninstall.sh -y -n -t "$SYNTHS" >/dev/null 2>&1); then echo "  removed $n"
         else FAIL="$FAIL $n"; echo "  FAIL    $n"; fi
     fi
 done
+[ -z "$STOP" ] || { echo "interrupted: stopped after the plugin in progress, the rest are still installed" >&2; exit 130; }
 [ -z "$FAIL" ] || { echo "failed:$FAIL" >&2; exit 1; }
 EOF
     } > "$root/uninstall-all.sh"
