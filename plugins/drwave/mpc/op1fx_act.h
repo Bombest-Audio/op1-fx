@@ -52,10 +52,132 @@ static void op1_act_midi(void *inst, const uint8_t *msg, int len)
     op1_act_base->midi(((op1_act_t *)inst)->inner, msg, len);
 }
 
+/* Preset and project state. MPC saves a plugin's sound as the VST2 chunk, and the wrapper fills that chunk from
+ * get_param("state") and hands it back through set_param("state"). Most engines don't answer "state", so a saved .xpl
+ * preset or project used to hold an empty chunk and loading it changed nothing (issue #3). This saves every host
+ * parameter in the engine's own value text, one per line:
+ *     op1\n<key>=<value>\n...\nstate=<the engine's own state>
+ * The last line is only there when the engine answers "state" itself (drumsampler's sample slots), and it runs to the
+ * end of the chunk. Loading replays the parameters in params.h order, a key the chunk lacks (one added after the preset
+ * was saved) goes back to its default, then the engine's own state is applied last. A chunk without the "op1\n"
+ * header (an older drumsampler preset) goes to the engine unchanged.
+ * The keys come from the port's generated params.h, which is on the include path only in a port build; an offline
+ * engine test without it gets the plain passthrough. */
+#if defined(__has_include)
+#if __has_include("params.h")
+#define OP1_STATE 1
+#endif
+#endif
+
+#ifdef OP1_STATE
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma GCC diagnostic ignored "-Wunused-const-variable"
+#include "params.h"
+#pragma GCC diagnostic pop
+
+#define OP1_STATE_HEAD "op1\n"
+#define OP1_STATE_INNER "state="
+
+/* Saved: a plain knob, switch or list. Not the engine-driven readout, a momentary button or a step trigger (both
+ * act on press), a popup's open flag or a text readout. */
+static int op1_state_saved(int i)
+{
+    const param_t *p = &PARAMS[i];
+    return strcmp(p->key, "act") != 0 && !p->momentary && p->step_target < 0 && p->popup_of < 0 && !p->string_display;
+}
+
+/* A parameter's default as the engine value text, the same conversion the wrapper's norm_to_str() makes. */
+static void op1_state_default(int i, char *buf, int len)
+{
+    const param_t *p = &PARAMS[i];
+    if (p->nopts)
+        snprintf(buf, (size_t)len, "%d", (int)lroundf(p->def * (float)(p->nopts - 1)));
+    else if (p->int_display)
+        snprintf(buf, (size_t)len, "%ld", lroundf(p->min + (p->max - p->min) * p->def));
+    else
+        snprintf(buf, (size_t)len, "%g", (double)(p->min + (p->max - p->min) * p->def));
+}
+
+/* Returns the length written, or 0 when it doesn't fit (the wrapper then saves no chunk rather than a cut-off one). */
+static int op1_state_write(void *inner, char *buf, int buf_len)
+{
+    int n = snprintf(buf, (size_t)buf_len, "%s", OP1_STATE_HEAD);
+    char val[64];
+    for (int i = 0; i < NPARAMS && n < buf_len; i++) {
+        if (!op1_state_saved(i) || op1_act_base->get_param(inner, PARAMS[i].key, val, (int)sizeof val) <= 0)
+            continue;
+        n += snprintf(buf + n, (size_t)(buf_len - n), "%s=%s\n", PARAMS[i].key, val);
+    }
+    if (n >= buf_len)
+        return 0;
+    const int head = n + (int)strlen(OP1_STATE_INNER);
+    if (head < buf_len) {
+        const int m = op1_act_base->get_param(inner, "state", buf + head, buf_len - head);
+        if (m > 0 && head + m < buf_len) {
+            memcpy(buf + n, OP1_STATE_INNER, strlen(OP1_STATE_INNER));
+            return head + m;
+        }
+        if (m > 0)
+            return 0;
+    }
+    buf[n] = 0;
+    return n;
+}
+
+static void op1_state_read(void *inner, const char *text)
+{
+    char *copy = strdup(text + strlen(OP1_STATE_HEAD));
+    if (!copy)
+        return;
+    const char *vals[NPARAMS > 0 ? NPARAMS : 1] = {0};
+    const char *own = NULL;
+    char *line = copy;
+    while (line && *line) {
+        if (!strncmp(line, OP1_STATE_INNER, strlen(OP1_STATE_INNER))) {
+            own = line + strlen(OP1_STATE_INNER);   /* runs to the end: the engine's state may hold newlines */
+            break;
+        }
+        char *next = strchr(line, '\n');
+        if (next)
+            *next++ = 0;
+        char *eq = strchr(line, '=');
+        if (eq) {
+            *eq = 0;
+            for (int i = 0; i < NPARAMS; i++)
+                if (op1_state_saved(i) && !strcmp(PARAMS[i].key, line)) {
+                    vals[i] = eq + 1;
+                    break;
+                }
+        }
+        line = next;
+    }
+    char def[64];
+    for (int i = 0; i < NPARAMS; i++) {
+        if (!op1_state_saved(i))
+            continue;
+        if (!vals[i]) {
+            op1_state_default(i, def, (int)sizeof def);
+            vals[i] = def;
+        }
+        op1_act_base->set_param(inner, PARAMS[i].key, vals[i]);
+    }
+    if (own && *own)
+        op1_act_base->set_param(inner, "state", own);
+    free(copy);
+}
+#endif
+
 static void op1_act_set_param(void *inst, const char *key, const char *val)
 {
     if (!strcmp(key, "act"))
         return;
+#ifdef OP1_STATE
+    if (!strcmp(key, "state") && !strncmp(val, OP1_STATE_HEAD, strlen(OP1_STATE_HEAD))) {
+        op1_state_read(((op1_act_t *)inst)->inner, val);
+        return;
+    }
+#endif
     op1_act_base->set_param(((op1_act_t *)inst)->inner, key, val);
 }
 
@@ -66,6 +188,10 @@ static int op1_act_get_param(void *inst, const char *key, char *buf, int buf_len
         return snprintf(buf, (size_t)buf_len, "%g", (double)a->frame / (double)(OP1_ACT_FRAMES - 1));
     if (!strcmp(key, "display_rev"))
         return snprintf(buf, (size_t)buf_len, "%d", a->rev);
+#ifdef OP1_STATE
+    if (!strcmp(key, "state"))
+        return op1_state_write(a->inner, buf, buf_len);
+#endif
     return op1_act_base->get_param(a->inner, key, buf, buf_len);
 }
 
