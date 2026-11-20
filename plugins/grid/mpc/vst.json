@@ -2,7 +2,7 @@
   "name": "Grid",
   "vendor": "bombest",
   "uid": "BbGd",
-  "version": 1001,
+  "version": 1002,
   "so": "grid.so",
   "params": "params.json",
   "layout": "layout.conf",
