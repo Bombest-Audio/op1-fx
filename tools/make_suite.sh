@@ -433,7 +433,10 @@ install_one() {
     recover_all "$1" || return 1
     if [ "$ROUTE" = vst2 ]; then
         vst2_install "$1" || return 1
-        if [ "$CLEAN" = 1 ]; then synths_remove "$1"; else each "$1" "$SYNTHS" place; fi
+        if [ "$CLEAN" = 1 ]; then synths_remove "$1"; return; fi
+        cur="$SYNTHS/$(pkg_val "$1" skin)"
+        if [ -d "$cur" ] && ! is_ours "$1" "$cur"; then echo "warning: $cur holds another plugin, left alone"; fi
+        each "$1" "$SYNTHS" place
     else
         (cd "$1" && sh install.sh -y -n -t "$SYNTHS") || return 1   # its entry replaces any entry with this uid
         if [ "$CLEAN" = 1 ]; then
