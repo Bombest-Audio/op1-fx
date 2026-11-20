@@ -2,7 +2,7 @@
   "name": "Voltage",
   "vendor": "bombest",
   "uid": "BbVl",
-  "version": 1000,
+  "version": 1001,
   "so": "voltage.so",
   "params": "params.json",
   "layout": "layout.conf",

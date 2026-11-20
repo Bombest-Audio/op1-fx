@@ -2,7 +2,7 @@
   "name": "Cwo",
   "vendor": "bombest",
   "uid": "BbCw",
-  "version": 1001,
+  "version": 1002,
   "so": "cwo.so",
   "params": "params.json",
   "layout": "layout.conf",

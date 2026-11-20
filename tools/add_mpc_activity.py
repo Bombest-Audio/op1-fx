@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Add the live activity meter to every plugin's MPC port (safe to run again).
 
-For each plugins/<id>/mpc: wraps the engine table with common/op1fx_act.h, adds the engine-driven "act" parameter,
+For each plugins/<id>/mpc: wraps the engine table with common/op1fx_act.h (which also saves and loads the preset
+state, see the header), adds the engine-driven "act" parameter,
 turns on HAS_DISPLAY_REV in vst.json, draws the 64-frame filmstrip in the plugin's accent colour and puts a `meter`
 line under the art on the first tab. Frame = lead knob step * 8 + signal level step: the ring sweeps as the lead
 Q-Link turns, the glow rises with the output level.

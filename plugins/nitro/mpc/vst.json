@@ -2,7 +2,7 @@
   "name": "Nitro",
   "vendor": "bombest",
   "uid": "BbNt",
-  "version": 1001,
+  "version": 1002,
   "so": "nitro.so",
   "params": "params.json",
   "layout": "layout.conf",
