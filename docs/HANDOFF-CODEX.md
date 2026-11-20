@@ -46,7 +46,7 @@ MPC port (toolchain `~/bombest-audio/mpc-re/mpc-vst-plugins`, needs Docker, one 
 cd ~/bombest-audio/mpc-re/mpc-vst-plugins
 tools/test_port.sh ~/bombest-audio/op1-fx/plugins/<id>/mpc/vst.json      # must print PASSED
 tools/build_port.sh ~/bombest-audio/op1-fx/plugins/<id>/mpc/vst.json all
-python3 tools/release.py --so <mpc>/build/aarch64/<id>.so --skin "<mpc>/build/skin/bombest - VST - <Name>" \
+python3 tools/release.py --so <mpc>/build/aarch64/<id>.so --skin "<mpc>/build/skin/Bombest Audio - VST - <Name>" \
   --entry <mpc>/build/pluginlist-entry.xml --version 0.2.0 --about "..." [--extra <mpc>/samples:samples] -o ~/bombest-audio/op1-fx/dist/mpc
 ```
 

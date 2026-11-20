@@ -31,10 +31,27 @@ Copy it to the MPC, unzip it, and run this on the device as root:
     sh install-all.sh -y
 
 MPC stops once, all twenty plugins install, MPC starts once. Save your project first. The installer stops if the zip is
-for the other generation. Each plugin also installs alone from `packages/<name>/install.sh`, or from its own
-`<Name>-<version>-mpc-<arch>.zip`. `uninstall-all.sh` removes them.
+for the other generation. `uninstall-all.sh` removes them.
 
-The Gen1 builds have not been tested on hardware yet. If one misbehaves, open an issue.
+Where they go depends on the MPC OS version:
+
+- **MPC OS 3.10.1:** the installer copies each plugin folder into the internal drive's `VST2 Plugins` folder
+  (`/nvme/VST2 Plugins` on Gen2, `/media/acvs-content/VST2 Plugins` on Gen1). Turn on Menu > Preferences > Enhancements >
+  Enable Enhancements and External Plugin Support, and the plugins show under External Plugins.
+- **MPC OS 3.9.x:** each plugin goes into the Synths folder with an entry in MPC.settings, as before.
+
+`-r vst2` or `-r synths` picks the route yourself. Upgrading from 3.9.x, a plugin already in the Synths folder is updated
+too, because projects saved on 3.9.x point at that path. Add `-c` to remove the old copy once your projects open with
+the new one. Up to 0.5.0 the plugin folders were named `bombest - VST - <Name>`; the installer treats those as the same
+plugins (by uid), so MPC never lists one twice.
+
+Each plugin also installs alone the Synths way from `packages/<name>/install.sh` or its own
+`<Name>-<version>-mpc-<arch>.zip`. Its `portable/<folder>/` holds the `plugin.json` 3.10.1 needs, so that folder can also
+go into `VST2 Plugins` by hand.
+
+Tested on hardware: Gen2 on an MPC Live III (3.9.1 and the Synths route), and Gen1 on an MPC One (3.10.1, the plugin
+folders copied into `VST2 Plugins` by hand). The installer's 3.10.1 route itself hasn't run on a device yet. If something
+misbehaves, open an issue.
 
 ## Build
 
